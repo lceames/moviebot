@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Movie Expert AI Agent is a sophisticated assistant designed to provide detailed information about movies, directors, actors, genres, and personalized recommendations. It leverages the SignalWire AI Gateway (SWAIG) for real-time communication, OpenAI's GPT models for natural language processing, and The Movie Database (TMDb) API for up-to-date movie data.
+The MovieBot SignalWire  AI Agent is a sophisticated assistant designed to provide detailed information about movies, directors, actors, genres, and personalized recommendations. It leverages the SignalWire AI Gateway (SWAIG) for real-time communication, OpenAI's GPT models for natural language processing, and The Movie Database (TMDb) API for up-to-date movie data.
 
 ## Features
 
