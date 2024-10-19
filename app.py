@@ -681,7 +681,9 @@ def swaig_handler():
             "get_upcoming_movies": get_upcoming_movies,
             "get_now_playing_movies": get_now_playing_movies,
             "get_similar_movies": get_similar_movies,
-            "multi_search": multi_search
+            "multi_search": multi_search,
+            "get_movie_credits": get_movie_credits,
+            "get_person_details": get_person_details
         }
 
         if function_name in function_map:
