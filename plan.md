@@ -34,7 +34,7 @@ This document outlines a detailed plan to build a movie expert AI agent using Si
 The AI agent leverages:
 
 - **SignalWire AI Gateway (SWAIG)**: To handle real-time communication and integrate AI functionalities.
-- **OpenAI GPT Models**: For natural language understanding and generation.
+- **OpenAI GPT Models**: Provides natural language understanding and generation capabilities via the SignalWire AI Agent framework. You can visit [SignalWire AI](https://signalwire.ai) to learn more.
 - **TMDb API**: To fetch real-time movie data, ensuring the AI provides accurate and current information.
 
 The integration involves creating SWAIG functions that interact with TMDb's API and integrating these functions into the AI agent's capabilities.

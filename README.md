@@ -24,7 +24,7 @@ The Movie Expert AI Agent is a sophisticated assistant designed to provide detai
 The AI agent is built on the following components:
 
 - **SignalWire AI Gateway (SWAIG)**: Facilitates real-time communication and integrates AI functionalities.
-- **OpenAI GPT Models**: Provides natural language understanding and generation capabilities.
+- **OpenAI GPT Models**: Provides natural language understanding and generation capabilities via the SignalWire AI Agent framework. You can visit [SignalWire AI](https://signalwire.ai) to learn more.
 - **TMDb API**: Supplies real-time movie data, ensuring the AI provides accurate and current information.
 
 ## Getting Started
@@ -80,9 +80,9 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Acknowledgments
 
-- **SignalWire**: For providing the AI Gateway.
-- **OpenAI**: For the GPT models.
-- **TMDb**: For the comprehensive movie database.
+- **SignalWire**: For providing the AI Gateway and enabling seamless integration of AI functionalities into the SignalWire AI Agent.
+- **OpenAI**: For the GPT models that power the natural language understanding and generation capabilities of the AI agent.
+- **TMDb**: For the comprehensive movie database that provides up-to-date movie information.
 
 ## Contact
 
