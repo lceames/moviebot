@@ -399,7 +399,100 @@ def format_multi_search_results(results):
             )
     return "\n".join(formatted_results)
 
+def get_movie_credits(movie_id, language="en-US"):
+    endpoint = f"/movie/{movie_id}/credits"
+    params = {"language": language}
+    response = call_tmdb_api(endpoint, params)
+    
+    # Format the response if successful
+    if 'cast' in response or 'crew' in response:
+        return format_movie_credits(response)
+    
+    return response
+
+def format_movie_credits(credits):
+    explanation = "Here are the cast and crew details for the movie:\n"
+    formatted_credits = [explanation]
+    
+    if 'cast' in credits:
+        formatted_credits.append("Cast:\n")
+        for member in credits['cast']:
+            formatted_credits.append(
+                f"Name: {member['name']}\n"
+                f"Character: {member['character']}\n"
+                f"Order: {member['order']}\n"
+                "----------------------------------------\n"
+            )
+    
+    if 'crew' in credits:
+        formatted_credits.append("Crew:\n")
+        for member in credits['crew']:
+            formatted_credits.append(
+                f"Name: {member['name']}\n"
+                f"Department: {member['department']}\n"
+                f"Job: {member['job']}\n"
+                "----------------------------------------\n"
+            )
+    
+    return "\n".join(formatted_credits)
+
+def get_person_details(person_id, language="en-US", append_to_response=None):
+    endpoint = f"/person/{person_id}"
+    params = {"language": language}
+    if append_to_response:
+        params["append_to_response"] = append_to_response
+    response = call_tmdb_api(endpoint, params)
+    
+    # Format the response if successful
+    if 'id' in response:
+        return format_person_details(response)
+    
+    return response
+
+def format_person_details(person):
+    explanation = "Here are the details about the person:\n"
+    formatted_details = (
+        explanation +
+        f"Name: {person['name']}\n"
+        f"Biography: {person['biography']}\n"
+        f"Birthday: {person['birthday']}\n"
+        f"Place of Birth: {person['place_of_birth']}\n"
+        f"Known For: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}\n"
+        f"Popularity: {person['popularity']}\n"
+        f"Profile Path: {person['profile_path']}\n"
+        "----------------------------------------\n"
+    )
+    return formatted_details
+
 SWAIG_FUNCTION_SIGNATURES = {
+    # ... existing function signatures ...
+    "get_movie_credits": {
+        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "purpose": "Retrieve cast and crew information for a movie",
+        "function": "get_movie_credits",
+        "argument": {
+            "type": "object",
+            "properties": {
+                "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
+                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"}
+            },
+            "required": ["movie_id"]
+        }
+    },
+    "get_person_details": {
+        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "purpose": "Retrieve detailed information about a person",
+        "function": "get_person_details",
+        "argument": {
+            "type": "object",
+            "properties": {
+                "person_id": {"type": "integer", "description": "The TMDb ID of the person."},
+                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
+                "append_to_response": {"type": "string", "description": "Additional requests to append to the result."}
+            },
+            "required": ["person_id"]
+        }
+    },
     "search_movie": {
         "web_hook_url": "https://swaig-server.signalwire.me/swaig",
         "purpose": "Search for movies by title",
