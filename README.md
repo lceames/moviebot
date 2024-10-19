@@ -39,7 +39,7 @@ The AI agent is built on the following components:
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/briankwest/moviebot.git
-   cd movie-expert-ai
+   cd moviebot
    ```
 
 2. **Install Dependencies**:
@@ -55,7 +55,7 @@ The AI agent is built on the following components:
 
 Run the AI agent using the command:
 ```bash
-python main.py
+python app.py
 ```
 
 Interact with the AI agent through the configured communication channels to get movie information and recommendations.
