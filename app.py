@@ -688,11 +688,9 @@ def swaig_handler():
 
         if function_name in function_map:
             response = function_map[function_name](**params)
-            return jsonify({ "response": response })
+            return jsonify({ "response": response, "action": [{ "extensive_data": True }] })
         else:
             return jsonify({"error": "Function not found"}), 404
-
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
