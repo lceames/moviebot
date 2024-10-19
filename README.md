@@ -38,7 +38,7 @@ The AI agent is built on the following components:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/yourusername/movie-expert-ai.git
+   git clone https://github.com/briankwest/moviebot.git
    cd movie-expert-ai
    ```
 
