@@ -18,9 +18,17 @@ def call_tmdb_api(endpoint, params):
     else:
         return {"error": response.status_code, "message": response.text}
 
-def search_movie(query, language="en-US"):
+def search_movie(query, language="en-US", page=1, include_adult=False, region=None, year=None, primary_release_year=None):
     endpoint = "/search/movie"
-    params = {"query": query, "language": language}
+    params = {
+        "query": query,
+        "language": language,
+        "page": page,
+        "include_adult": include_adult,
+        "region": region,
+        "year": year,
+        "primary_release_year": primary_release_year
+    }
     response = call_tmdb_api(endpoint, params)
     
     # Format the results if the response is successful
@@ -91,13 +99,24 @@ def format_movie_details(movie):
     )
     return formatted_details
 
-def discover_movies(with_genres=None, primary_release_year=None, sort_by="popularity.desc", language="en-US"):
+def discover_movies(language="en-US", region=None, sort_by="popularity.desc", include_adult=False, include_video=False, page=1, primary_release_year=None, primary_release_date_gte=None, primary_release_date_lte=None, with_genres=None, with_cast=None, with_crew=None, with_keywords=None, with_runtime_gte=None, with_runtime_lte=None):
     endpoint = "/discover/movie"
     params = {
-        "with_genres": with_genres,
-        "primary_release_year": primary_release_year,
+        "language": language,
+        "region": region,
         "sort_by": sort_by,
-        "language": language
+        "include_adult": include_adult,
+        "include_video": include_video,
+        "page": page,
+        "primary_release_year": primary_release_year,
+        "primary_release_date_gte": primary_release_date_gte,
+        "primary_release_date_lte": primary_release_date_lte,
+        "with_genres": with_genres,
+        "with_cast": with_cast,
+        "with_crew": with_crew,
+        "with_keywords": with_keywords,
+        "with_runtime_gte": with_runtime_gte,
+        "with_runtime_lte": with_runtime_lte
     }
     response = call_tmdb_api(endpoint, params)
     
