@@ -38,7 +38,8 @@ def search_movie(query, language="en-US", page=1, include_adult=False, region=No
     return response
 
 def format_movie_search_results(results):
-    formatted_results = []
+    explanation = "These are the search results for movies based on your query:\n"
+    formatted_results = [explanation]
     for movie in results:
         formatted_results.append(
             f"id: {movie['id']}\n"
@@ -69,11 +70,13 @@ def get_movie_details(movie_id, language="en-US"):
     return response
 
 def format_movie_details(movie):
+    explanation = "Here are the detailed information about the movie:\n"
     genres = ', '.join(genre['name'] for genre in movie.get('genres', []))
     production_companies = ', '.join(company['name'] for company in movie.get('production_companies', []))
     spoken_languages = ', '.join(language['name'] for language in movie.get('spoken_languages', []))
     
     formatted_details = (
+        explanation +
         f"id: {movie['id']}\n"
         f"title: {movie['title']}\n"
         f"original_title: {movie['original_title']}\n"
@@ -127,7 +130,8 @@ def discover_movies(language="en-US", region=None, sort_by="popularity.desc", in
     return response
 
 def format_discover_movies_results(results):
-    formatted_results = []
+    explanation = "These are the movies discovered based on your criteria:\n"
+    formatted_results = [explanation]
     for movie in results:
         formatted_results.append(
             f"id: {movie['id']}\n"
@@ -158,7 +162,8 @@ def get_trending_movies(time_window="week", language="en-US"):
     return response
 
 def format_trending_movies_results(results):
-    formatted_results = []
+    explanation = "These are the trending movies for the selected time window:\n"
+    formatted_results = [explanation]
     for movie in results:
         formatted_results.append(
             f"id: {movie['id']}\n"
@@ -190,7 +195,8 @@ def get_movie_recommendations(movie_id, language="en-US"):
     return response
 
 def format_movie_recommendations_results(results):
-    formatted_results = []
+    explanation = "These are the recommended movies based on your selection:\n"
+    formatted_results = [explanation]
     for movie in results:
         formatted_results.append(
             f"id: {movie['id']}\n"
@@ -222,7 +228,8 @@ def get_genre_list(language="en-US"):
     return response
 
 def format_genre_list(genres):
-    formatted_genres = []
+    explanation = "Here is the list of available movie genres:\n"
+    formatted_genres = [explanation]
     for genre in genres:
         formatted_genres.append(
             f"id: {genre['id']}\n"
@@ -243,7 +250,8 @@ def get_upcoming_movies(language="en-US", region=None):
     return response
 
 def format_upcoming_movies_results(results):
-    formatted_results = []
+    explanation = "These are the upcoming movies:\n"
+    formatted_results = [explanation]
     for movie in results:
         formatted_results.append(
             f"id: {movie['id']}\n"
@@ -275,7 +283,8 @@ def get_now_playing_movies(language="en-US", region=None):
     return response
 
 def format_now_playing_movies_results(results):
-    formatted_results = []
+    explanation = "These are the movies currently playing in theaters:\n"
+    formatted_results = [explanation]
     for movie in results:
         formatted_results.append(
             f"id: {movie['id']}\n"
@@ -307,7 +316,8 @@ def get_similar_movies(movie_id, language="en-US"):
     return response
 
 def format_similar_movies_results(results):
-    formatted_results = []
+    explanation = "These are movies similar to your selection:\n"
+    formatted_results = [explanation]
     for movie in results:
         formatted_results.append(
             f"id: {movie['id']}\n"
@@ -345,7 +355,8 @@ def multi_search(query, language="en-US", page=1, include_adult=False, region=No
     return response
 
 def format_multi_search_results(results):
-    formatted_results = []
+    explanation = "These are the results from your multi-search query:\n"
+    formatted_results = [explanation]
     for item in results:
         if item['media_type'] == 'movie':
             formatted_results.append(
