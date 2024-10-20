@@ -303,42 +303,33 @@ def format_multi_search_results(results):
     formatted_results = [explanation]
     for item in results[:10]:  # Limit to the first 10 results
         if item['media_type'] == 'movie':
+            formatted_results.append("Movie:\n")
             formatted_results.append(
-                f"Movie: {item['title']}\n"
-                f"Original Title: {item['original_title']}\n"
-                f"Release Date: {item['release_date']}\n"
-                f"Overview: {item['overview']}\n"
-                f"Vote Average: {item['vote_average']}\n"
-                f"Vote Count: {item['vote_count']}\n"
-                f"Popularity: {item['popularity']}\n"
-                f"Genre IDs: {', '.join(map(str, item['genre_ids']))}\n"
-                f"Original Language: {item['original_language']}\n"
-                f"Poster Path: {item['poster_path']}\n"
-                f"Backdrop Path: {item['backdrop_path']}\n"
-                f"Adult: {'Yes' if item['adult'] else 'No'}\n"
+                f"id: {item['id']}\n"
+                f"title: {item['title']}\n"
+                f"original_title: {item['original_title']}\n"
+                f"release_date: {item['release_date']}\n"
+                f"overview: {item['overview']}\n"
+                f"genre_ids: {', '.join(map(str, item['genre_ids']))}\n"
                 "-------\n"
             )
         elif item['media_type'] == 'tv':
+            formatted_results.append("TV Show:\n")
             formatted_results.append(
-                f"TV Show: {item['name']}\n"
-                f"Original Name: {item['original_name']}\n"
-                f"First Air Date: {item.get('first_air_date', 'N/A')}\n"
-                f"Overview: {item['overview']}\n"
-                f"Vote Average: {item['vote_average']}\n"
-                f"Vote Count: {item['vote_count']}\n"
-                f"Popularity: {item['popularity']}\n"
-                f"Genre IDs: {', '.join(map(str, item['genre_ids']))}\n"
-                f"Original Language: {item['original_language']}\n"
-                f"Poster Path: {item['poster_path']}\n"
-                f"Backdrop Path: {item['backdrop_path']}\n"
+                f"id: {item['id']}\n"
+                f"name: {item['name']}\n"
+                f"original_name: {item['original_name']}\n"
+                f"first_air_date: {item.get('first_air_date', 'N/A')}\n"
+                f"overview: {item['overview']}\n"
+                f"genre_ids: {', '.join(map(str, item['genre_ids']))}\n"
                 "-------\n"
             )
         elif item['media_type'] == 'person':
+            formatted_results.append("Person:\n")
             formatted_results.append(
-                f"Person: {item['name']}\n"
-                f"Known For: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])}\n"
-                f"Popularity: {item['popularity']}\n"
-                f"Known For Department: {item['known_for_department']}\n"
+                f"name: {item['name']}\n"
+                f"known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])}\n"
+                f"known_for_department: {item['known_for_department']}\n"
                 "-------\n"
             )
     return "\n".join(formatted_results)
