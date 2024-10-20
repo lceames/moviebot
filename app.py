@@ -54,7 +54,7 @@ def format_movie_search_results(results):
             f"poster_path: {movie['poster_path']}\n"
             f"backdrop_path: {movie['backdrop_path']}\n"
             f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_results)
 
@@ -98,7 +98,7 @@ def format_movie_details(movie):
         f"poster_path: {movie['poster_path']}\n"
         f"backdrop_path: {movie['backdrop_path']}\n"
         f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-        "----------------------------------------\n"
+        "-------\n"
     )
     return formatted_details
 
@@ -146,7 +146,7 @@ def format_discover_movies_results(results):
             f"poster_path: {movie['poster_path']}\n"
             f"backdrop_path: {movie['backdrop_path']}\n"
             f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_results)
 
@@ -179,7 +179,7 @@ def format_trending_movies_results(results):
             f"poster_path: {movie['poster_path']}\n"
             f"backdrop_path: {movie['backdrop_path']}\n"
             f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_results)
 
@@ -212,7 +212,7 @@ def format_movie_recommendations_results(results):
             f"poster_path: {movie['poster_path']}\n"
             f"backdrop_path: {movie['backdrop_path']}\n"
             f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_results)
 
@@ -234,7 +234,7 @@ def format_genre_list(genres):
         formatted_genres.append(
             f"id: {genre['id']}\n"
             f"name: {genre['name']}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_genres)
 
@@ -267,7 +267,7 @@ def format_upcoming_movies_results(results):
             f"poster_path: {movie['poster_path']}\n"
             f"backdrop_path: {movie['backdrop_path']}\n"
             f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_results)
 
@@ -300,7 +300,7 @@ def format_now_playing_movies_results(results):
             f"poster_path: {movie['poster_path']}\n"
             f"backdrop_path: {movie['backdrop_path']}\n"
             f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_results)
 
@@ -333,7 +333,7 @@ def format_similar_movies_results(results):
             f"poster_path: {movie['poster_path']}\n"
             f"backdrop_path: {movie['backdrop_path']}\n"
             f"adult: {'Yes' if movie['adult'] else 'No'}\n"
-            "----------------------------------------\n"
+            "-------\n"
         )
     return "\n".join(formatted_results)
 
@@ -372,7 +372,7 @@ def format_multi_search_results(results):
                 f"Poster Path: {item['poster_path']}\n"
                 f"Backdrop Path: {item['backdrop_path']}\n"
                 f"Adult: {'Yes' if item['adult'] else 'No'}\n"
-                "----------------------------------------\n"
+                "-------\n"
             )
         elif item['media_type'] == 'tv':
             formatted_results.append(
@@ -387,7 +387,7 @@ def format_multi_search_results(results):
                 f"Original Language: {item['original_language']}\n"
                 f"Poster Path: {item['poster_path']}\n"
                 f"Backdrop Path: {item['backdrop_path']}\n"
-                "----------------------------------------\n"
+                "-------\n"
             )
         elif item['media_type'] == 'person':
             formatted_results.append(
@@ -395,7 +395,7 @@ def format_multi_search_results(results):
                 f"Known For: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])}\n"
                 f"Popularity: {item['popularity']}\n"
                 f"Known For Department: {item['known_for_department']}\n"
-                "----------------------------------------\n"
+                "-------\n"
             )
     return "\n".join(formatted_results)
 
@@ -421,7 +421,7 @@ def format_movie_credits(credits):
                 f"Name: {member['name']}\n"
                 f"Character: {member['character']}\n"
                 f"Order: {member['order']}\n"
-                "----------------------------------------\n"
+                "-------\n"
             )
     
     if 'crew' in credits:
@@ -431,7 +431,7 @@ def format_movie_credits(credits):
                 f"Name: {member['name']}\n"
                 f"Department: {member['department']}\n"
                 f"Job: {member['job']}\n"
-                "----------------------------------------\n"
+                "-------\n"
             )
     
     return "\n".join(formatted_credits)
@@ -460,7 +460,7 @@ def format_person_details(person):
         f"Known For: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}\n"
         f"Popularity: {person['popularity']}\n"
         f"Profile Path: {person['profile_path']}\n"
-        "----------------------------------------\n"
+        "-------\n"
     )
     return formatted_details
 
