@@ -46,14 +46,8 @@ def format_movie_search_results(results):
             f"title: {movie['title']}\n"
             f"release_date: {movie.get('release_date', 'N/A')}\n"
             f"overview: {movie['overview']}\n"
-            f"vote_average: {movie['vote_average']}\n"
-            f"vote_count: {movie['vote_count']}\n"
-            f"popularity: {movie['popularity']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
             f"original_language: {movie['original_language']}\n"
-            f"poster_path: {movie['poster_path']}\n"
-            f"backdrop_path: {movie['backdrop_path']}\n"
-            f"adult: {'Yes' if movie['adult'] else 'No'}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -95,9 +89,6 @@ def format_movie_details(movie):
         f"homepage: {movie['homepage']}\n"
         f"status: {movie['status']}\n"
         f"tagline: {movie['tagline']}\n"
-        f"poster_path: {movie['poster_path']}\n"
-        f"backdrop_path: {movie['backdrop_path']}\n"
-        f"adult: {'Yes' if movie['adult'] else 'No'}\n"
         "-------\n"
     )
     return formatted_details
@@ -138,14 +129,7 @@ def format_discover_movies_results(results):
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
             f"overview: {movie['overview']}\n"
-            f"vote_average: {movie['vote_average']}\n"
-            f"vote_count: {movie['vote_count']}\n"
-            f"popularity: {movie['popularity']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
-            f"original_language: {movie['original_language']}\n"
-            f"poster_path: {movie['poster_path']}\n"
-            f"backdrop_path: {movie['backdrop_path']}\n"
-            f"adult: {'Yes' if movie['adult'] else 'No'}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -168,17 +152,9 @@ def format_trending_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
-            f"original_title: {movie['original_title']}\n"
             f"release_date: {movie['release_date']}\n"
             f"overview: {movie['overview']}\n"
-            f"vote_average: {movie['vote_average']}\n"
-            f"vote_count: {movie['vote_count']}\n"
-            f"popularity: {movie['popularity']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
-            f"original_language: {movie['original_language']}\n"
-            f"poster_path: {movie['poster_path']}\n"
-            f"backdrop_path: {movie['backdrop_path']}\n"
-            f"adult: {'Yes' if movie['adult'] else 'No'}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -201,17 +177,9 @@ def format_movie_recommendations_results(results):
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
-            f"original_title: {movie['original_title']}\n"
             f"release_date: {movie['release_date']}\n"
             f"overview: {movie['overview']}\n"
-            f"vote_average: {movie['vote_average']}\n"
-            f"vote_count: {movie['vote_count']}\n"
-            f"popularity: {movie['popularity']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
-            f"original_language: {movie['original_language']}\n"
-            f"poster_path: {movie['poster_path']}\n"
-            f"backdrop_path: {movie['backdrop_path']}\n"
-            f"adult: {'Yes' if movie['adult'] else 'No'}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -256,17 +224,9 @@ def format_upcoming_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
-            f"original_title: {movie['original_title']}\n"
             f"release_date: {movie['release_date']}\n"
             f"overview: {movie['overview']}\n"
-            f"vote_average: {movie['vote_average']}\n"
-            f"vote_count: {movie['vote_count']}\n"
-            f"popularity: {movie['popularity']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
-            f"original_language: {movie['original_language']}\n"
-            f"poster_path: {movie['poster_path']}\n"
-            f"backdrop_path: {movie['backdrop_path']}\n"
-            f"adult: {'Yes' if movie['adult'] else 'No'}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -289,17 +249,9 @@ def format_now_playing_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
-            f"original_title: {movie['original_title']}\n"
             f"release_date: {movie['release_date']}\n"
             f"overview: {movie['overview']}\n"
-            f"vote_average: {movie['vote_average']}\n"
-            f"vote_count: {movie['vote_count']}\n"
-            f"popularity: {movie['popularity']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
-            f"original_language: {movie['original_language']}\n"
-            f"poster_path: {movie['poster_path']}\n"
-            f"backdrop_path: {movie['backdrop_path']}\n"
-            f"adult: {'Yes' if movie['adult'] else 'No'}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -322,17 +274,9 @@ def format_similar_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
-            f"original_title: {movie['original_title']}\n"
             f"release_date: {movie['release_date']}\n"
             f"overview: {movie['overview']}\n"
-            f"vote_average: {movie['vote_average']}\n"
-            f"vote_count: {movie['vote_count']}\n"
-            f"popularity: {movie['popularity']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
-            f"original_language: {movie['original_language']}\n"
-            f"poster_path: {movie['poster_path']}\n"
-            f"backdrop_path: {movie['backdrop_path']}\n"
-            f"adult: {'Yes' if movie['adult'] else 'No'}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -465,7 +409,6 @@ def format_person_details(person):
     return formatted_details
 
 SWAIG_FUNCTION_SIGNATURES = {
-    # ... existing function signatures ...
     "get_movie_credits": {
         "web_hook_url": "https://swaig-server.signalwire.me/swaig",
         "purpose": "Retrieve cast and crew information for a movie",
