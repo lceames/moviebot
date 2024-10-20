@@ -41,12 +41,13 @@ def format_movie_search_results(results):
     explanation = "These are the search results for movies based on your query:\n"
     formatted_results = [explanation]
     for movie in results[:5]:  # Limit to the first 5 movies
+        genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie.get('release_date', 'N/A')}\n"
             f"overview: {movie['overview']}\n"
-            f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
+            f"genre_ids: {', '.join(map(str, genre_ids))}\n"
             f"original_language: {movie['original_language']}\n"
             "-------\n"
         )
@@ -124,11 +125,12 @@ def format_discover_movies_results(results):
     explanation = "These are the movies discovered based on your criteria:\n"
     formatted_results = [explanation]
     for movie in results[:5]:  # Limit to the first 5 movies
+        genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
+            f"genre_ids: {', '.join(map(str, genre_ids))}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -148,11 +150,12 @@ def format_trending_movies_results(results):
     explanation = "These are the trending movies for the selected time window:\n"
     formatted_results = [explanation]
     for movie in results[:5]:
+        genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
+            f"genre_ids: {', '.join(map(str, genre_ids))}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -172,11 +175,12 @@ def format_movie_recommendations_results(results):
     explanation = "These are the recommended movies based on your selection:\n"
     formatted_results = [explanation]
     for movie in results[:5]:  # Limit to the first 5 movies
+        genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
+            f"genre_ids: {', '.join(map(str, genre_ids))}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -218,11 +222,12 @@ def format_upcoming_movies_results(results):
     explanation = "These are the upcoming movies:\n"
     formatted_results = [explanation]
     for movie in results[:5]:  # Limit to the first 5 movies
+        genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
+            f"genre_ids: {', '.join(map(str, genre_ids))}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -242,11 +247,12 @@ def format_now_playing_movies_results(results):
     explanation = "These are the movies currently playing in theaters:\n"
     formatted_results = [explanation]
     for movie in results[:5]:  # Limit to the first 5 movies
+        genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
+            f"genre_ids: {', '.join(map(str, genre_ids))}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -266,11 +272,12 @@ def format_similar_movies_results(results):
     explanation = "These are movies similar to your selection:\n"
     formatted_results = [explanation]
     for movie in results[:5]:  # Limit to the first 5 movies
+        genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
+            f"genre_ids: {', '.join(map(str, genre_ids))}\n"
             "-------\n"
         )
     return "\n".join(formatted_results)
@@ -297,21 +304,23 @@ def format_multi_search_results(results):
     formatted_results = [explanation]
     for item in results[:10]:  # Limit to the first 10 results
         if item['media_type'] == 'movie':
+            genre_ids = item.get('genre_ids', [])
             formatted_results.append("Movie:\n")
             formatted_results.append(
                 f"id: {item['id']}\n"
                 f"title: {item['title']}\n"
                 f"release_date: {item['release_date']}\n"
-                f"genre_ids: {', '.join(map(str, item['genre_ids']))}\n"
+                f"genre_ids: {', '.join(map(str, genre_ids))}\n"
                 "-------\n"
             )
         elif item['media_type'] == 'tv':
+            genre_ids = item.get('genre_ids', [])
             formatted_results.append("TV Show:\n")
             formatted_results.append(
                 f"id: {item['id']}\n"
                 f"name: {item['name']}\n"
                 f"first_air_date: {item.get('first_air_date', 'N/A')}\n"
-                f"genre_ids: {', '.join(map(str, item['genre_ids']))}\n"
+                f"genre_ids: {', '.join(map(str, genre_ids))}\n"
                 "-------\n"
             )
         elif item['media_type'] == 'person':
