@@ -44,7 +44,7 @@ def format_movie_search_results(results):
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
-            f"release_date: {movie['release_date']}\n"
+            f"release_date: {movie.get('release_date', 'N/A')}\n"
             f"overview: {movie['overview']}\n"
             f"vote_average: {movie['vote_average']}\n"
             f"vote_count: {movie['vote_count']}\n"
