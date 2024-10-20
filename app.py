@@ -45,7 +45,7 @@ def format_movie_search_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie.get('release_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def get_movie_details(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}"
@@ -85,7 +85,7 @@ def format_movie_details(movie):
         f"status: {movie['status']}\n"
         f"tagline: {movie['tagline']}\n"
     )
-    return formatted_details
+    return "\n".join(formatted_details)
 
 def discover_movies(language="en-US", region=None, sort_by="popularity.desc", include_adult=False, include_video=False, page=1, primary_release_year=None, primary_release_date_gte=None, primary_release_date_lte=None, with_genres=None, with_cast=None, with_crew=None, with_keywords=None, with_runtime_gte=None, with_runtime_lte=None):
     endpoint = "/discover/movie"
@@ -122,7 +122,7 @@ def format_discover_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def get_trending_movies(time_window="week", language="en-US"):
     endpoint = f"/trending/movie/{time_window}"
@@ -143,7 +143,7 @@ def format_trending_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def get_movie_recommendations(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}/recommendations"
@@ -164,7 +164,7 @@ def format_movie_recommendations_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def get_genre_list(language="en-US"):
     endpoint = "/genre/movie/list"
@@ -205,7 +205,7 @@ def format_upcoming_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def get_now_playing_movies(language="en-US", region=None):
     endpoint = "/movie/now_playing"
@@ -226,7 +226,7 @@ def format_now_playing_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
         )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def get_similar_movies(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}/similar"
@@ -247,7 +247,7 @@ def format_similar_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def multi_search(query, language="en-US", page=1, include_adult=False, region=None):
     endpoint = "/search/multi"
@@ -287,7 +287,7 @@ def format_multi_search_results(results):
             formatted_results.append(
                 f"name: {item['name']} known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])} known_for_department: {item['known_for_department']}"
             )
-    return formatted_results
+    return "\n".join(formatted_results)
 
 def get_movie_credits(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}/credits"
