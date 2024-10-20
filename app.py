@@ -572,5 +572,36 @@ def swaig_handler():
         else:
             return jsonify({"error": "Function not found"}), 404
 
+@app.route('/')
+def home():
+    html_content = """
+    <html>
+        <head>
+            <title>SWAIG Server</title>
+        </head>
+        <body>
+            <h1>Welcome to the SWAIG Server</h1>
+            <p>This server provides various endpoints to interact with The Movie Database (TMDb) API.</p>
+            <h2>Available Functions:</h2>
+            <ul>
+                <li>Search for movies by title</li>
+                <li>Retrieve detailed information about a movie</li>
+                <li>Discover movies by different criteria</li>
+                <li>Get trending movies</li>
+                <li>Get movie recommendations</li>
+                <li>Retrieve the list of official genres</li>
+                <li>Get upcoming movies</li>
+                <li>Get movies currently playing in theaters</li>
+                <li>Retrieve similar movies</li>
+                <li>Search for movies, TV shows, and people in a single request</li>
+                <li>Retrieve cast and crew information for a movie</li>
+                <li>Retrieve detailed information about a person</li>
+            </ul>
+            <p>For more information, visit the <a href="https://github.com/briankwest/moviebot">GitHub repository</a>.</p>
+        </body>
+    </html>
+    """
+    return html_content
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
