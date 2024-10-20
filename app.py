@@ -43,7 +43,7 @@ def format_movie_search_results(results):
     for movie in results[:5]:  # Limit to the first 5 movies
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
-            f"id: {movie['id']} title: {movie['title']} release_date: {movie.get('release_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}\n"
+            f"id: {movie['id']} title: {movie['title']} release_date: {movie.get('release_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return formatted_results
 
@@ -120,7 +120,7 @@ def format_discover_movies_results(results):
     for movie in results[:5]:  # Limit to the first 5 movies
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
-            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
+            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return formatted_results
 
@@ -141,7 +141,7 @@ def format_trending_movies_results(results):
     for movie in results[:5]:
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
-            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
+            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return formatted_results
 
@@ -162,7 +162,7 @@ def format_movie_recommendations_results(results):
     for movie in results[:5]:  # Limit to the first 5 movies
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
-            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
+            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return formatted_results
 
@@ -182,7 +182,7 @@ def format_genre_list(genres):
     formatted_genres = [explanation]
     for genre in genres:
         formatted_genres.append(
-            f"name: {genre['name']} id: {genre['id']}\n"
+            f"name: {genre['name']} id: {genre['id']}"
         )
     return "\n".join(formatted_genres)
 
@@ -203,7 +203,7 @@ def format_upcoming_movies_results(results):
     for movie in results[:10]:  # Limit to the first 10 movies
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
-            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
+            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return formatted_results
 
@@ -245,7 +245,7 @@ def format_similar_movies_results(results):
     for movie in results[:5]:  # Limit to the first 5 movies
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
-            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
+            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return formatted_results
 
@@ -270,22 +270,22 @@ def format_multi_search_results(results):
     explanation = "These are the results from your multi-search query:\n"
     formatted_results = [explanation]
     for item in results[:10]:  # Limit to the first 10 results
-        if item['media_type'] == 'movie':
+        if item['media_type'] == '\nmovie':
             genre_ids = item.get('genre_ids', [])
-            formatted_results.append("movie:\n")
+            formatted_results.append("\nmovie:")
             formatted_results.append(
-                f"id: {item['id']} title: {item['title']} release_date: {item['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
+                f"id: {item['id']} title: {item['title']} release_date: {item['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
             )
         elif item['media_type'] == 'tv':
             genre_ids = item.get('genre_ids', [])
-            formatted_results.append("tv show:\n")
+            formatted_results.append("\ntv show:")
             formatted_results.append(
-                f"id: {item['id']} name: {item['name']} first_air_date: {item.get('first_air_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}\n"
+                f"id: {item['id']} name: {item['name']} first_air_date: {item.get('first_air_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}"
             )
         elif item['media_type'] == 'person':
-            formatted_results.append("person:\n")
+            formatted_results.append("\nperson:")
             formatted_results.append(
-                f"name: {item['name']} known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])} known_for_department: {item['known_for_department']}\n"
+                f"name: {item['name']} known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])} known_for_department: {item['known_for_department']}"
             )
     return formatted_results
 
@@ -305,17 +305,17 @@ def format_movie_credits(credits):
     formatted_credits = [explanation]
     
     if 'cast' in credits:
-        formatted_credits.append("cast:\n")
+        formatted_credits.append("\ncast:")
         for member in credits['cast']:
             formatted_credits.append(
-                f"name: {member['name']} character: {member['character']}\n"
+                f"name: {member['name']} character: {member['character']}"
             )
     
     if 'crew' in credits:
-        formatted_credits.append("crew:\n")
+        formatted_credits.append("\ncrew:")
         for member in credits['crew']:
             formatted_credits.append(
-                f"name: {member['name']} department: {member['department']} job: {member['job']}\n"
+                f"name: {member['name']} department: {member['department']} job: {member['job']}"
             )
     
     return "\n".join(formatted_credits)
@@ -341,7 +341,7 @@ def format_person_details(person):
         f"biography: {person['biography']}\n"
         f"birthday: {person['birthday']}\n"
         f"place_of_birth: {person['place_of_birth']}\n"
-        f"known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}\n"
+        f"known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}"
     )
     return "\n".join(formatted_details)
 
