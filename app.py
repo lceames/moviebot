@@ -128,7 +128,6 @@ def format_discover_movies_results(results):
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"overview: {movie['overview']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
             "-------\n"
         )
@@ -148,12 +147,11 @@ def get_trending_movies(time_window="week", language="en-US"):
 def format_trending_movies_results(results):
     explanation = "These are the trending movies for the selected time window:\n"
     formatted_results = [explanation]
-    for movie in results:
+    for movie in results[:5]:
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"overview: {movie['overview']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
             "-------\n"
         )
@@ -178,7 +176,6 @@ def format_movie_recommendations_results(results):
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"overview: {movie['overview']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
             "-------\n"
         )
@@ -225,7 +222,6 @@ def format_upcoming_movies_results(results):
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"overview: {movie['overview']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
             "-------\n"
         )
@@ -250,7 +246,6 @@ def format_now_playing_movies_results(results):
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"overview: {movie['overview']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
             "-------\n"
         )
@@ -275,7 +270,6 @@ def format_similar_movies_results(results):
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
             f"release_date: {movie['release_date']}\n"
-            f"overview: {movie['overview']}\n"
             f"genre_ids: {', '.join(map(str, movie['genre_ids']))}\n"
             "-------\n"
         )
@@ -307,9 +301,7 @@ def format_multi_search_results(results):
             formatted_results.append(
                 f"id: {item['id']}\n"
                 f"title: {item['title']}\n"
-                f"original_title: {item['original_title']}\n"
                 f"release_date: {item['release_date']}\n"
-                f"overview: {item['overview']}\n"
                 f"genre_ids: {', '.join(map(str, item['genre_ids']))}\n"
                 "-------\n"
             )
@@ -318,9 +310,7 @@ def format_multi_search_results(results):
             formatted_results.append(
                 f"id: {item['id']}\n"
                 f"name: {item['name']}\n"
-                f"original_name: {item['original_name']}\n"
                 f"first_air_date: {item.get('first_air_date', 'N/A')}\n"
-                f"overview: {item['overview']}\n"
                 f"genre_ids: {', '.join(map(str, item['genre_ids']))}\n"
                 "-------\n"
             )
@@ -353,9 +343,9 @@ def format_movie_credits(credits):
         formatted_credits.append("Cast:\n")
         for member in credits['cast']:
             formatted_credits.append(
-                f"Name: {member['name']}\n"
-                f"Character: {member['character']}\n"
-                f"Order: {member['order']}\n"
+                f"name: {member['name']}\n"
+                f"character: {member['character']}\n"
+                f"order: {member['order']}\n"
                 "-------\n"
             )
     
@@ -363,9 +353,9 @@ def format_movie_credits(credits):
         formatted_credits.append("Crew:\n")
         for member in credits['crew']:
             formatted_credits.append(
-                f"Name: {member['name']}\n"
-                f"Department: {member['department']}\n"
-                f"Job: {member['job']}\n"
+                f"name: {member['name']}\n"
+                f"department: {member['department']}\n"
+                f"job: {member['job']}\n"
                 "-------\n"
             )
     
@@ -388,13 +378,11 @@ def format_person_details(person):
     explanation = "Here are the details about the person:\n"
     formatted_details = (
         explanation +
-        f"Name: {person['name']}\n"
-        f"Biography: {person['biography']}\n"
-        f"Birthday: {person['birthday']}\n"
-        f"Place of Birth: {person['place_of_birth']}\n"
-        f"Known For: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}\n"
-        f"Popularity: {person['popularity']}\n"
-        f"Profile Path: {person['profile_path']}\n"
+        f"name: {person['name']}\n"
+        f"biography: {person['biography']}\n"
+        f"birthday: {person['birthday']}\n"
+        f"place_of_birth: {person['place_of_birth']}\n"
+        f"known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}\n"
         "-------\n"
     )
     return formatted_details
