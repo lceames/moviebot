@@ -568,7 +568,7 @@ def swaig_handler():
 
         if function_name in function_map:
             response = function_map[function_name](**params)
-            return jsonify({ "response": response, "action": [{ "extensive_data": True }] })
+            return jsonify({ "response": response })
         else:
             return jsonify({"error": "Function not found"}), 404
 
