@@ -40,7 +40,7 @@ def search_movie(query, language="en-US", page=1, include_adult=False, region=No
 def format_movie_search_results(results):
     explanation = "These are the search results for movies based on your query:\n"
     formatted_results = [explanation]
-    for movie in results:
+    for movie in results[:5]:  # Limit to the first 5 movies
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
@@ -123,7 +123,7 @@ def discover_movies(language="en-US", region=None, sort_by="popularity.desc", in
 def format_discover_movies_results(results):
     explanation = "These are the movies discovered based on your criteria:\n"
     formatted_results = [explanation]
-    for movie in results:
+    for movie in results[:5]:  # Limit to the first 5 movies
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
@@ -173,7 +173,7 @@ def get_movie_recommendations(movie_id, language="en-US"):
 def format_movie_recommendations_results(results):
     explanation = "These are the recommended movies based on your selection:\n"
     formatted_results = [explanation]
-    for movie in results:
+    for movie in results[:5]:  # Limit to the first 5 movies
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
@@ -220,7 +220,7 @@ def get_upcoming_movies(language="en-US", region=None):
 def format_upcoming_movies_results(results):
     explanation = "These are the upcoming movies:\n"
     formatted_results = [explanation]
-    for movie in results:
+    for movie in results[:5]:  # Limit to the first 5 movies
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
@@ -245,7 +245,7 @@ def get_now_playing_movies(language="en-US", region=None):
 def format_now_playing_movies_results(results):
     explanation = "These are the movies currently playing in theaters:\n"
     formatted_results = [explanation]
-    for movie in results:
+    for movie in results[:5]:  # Limit to the first 5 movies
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
@@ -270,7 +270,7 @@ def get_similar_movies(movie_id, language="en-US"):
 def format_similar_movies_results(results):
     explanation = "These are movies similar to your selection:\n"
     formatted_results = [explanation]
-    for movie in results:
+    for movie in results[:5]:  # Limit to the first 5 movies
         formatted_results.append(
             f"id: {movie['id']}\n"
             f"title: {movie['title']}\n"
@@ -301,7 +301,7 @@ def multi_search(query, language="en-US", page=1, include_adult=False, region=No
 def format_multi_search_results(results):
     explanation = "These are the results from your multi-search query:\n"
     formatted_results = [explanation]
-    for item in results:
+    for item in results[:10]:  # Limit to the first 10 results
         if item['media_type'] == 'movie':
             formatted_results.append(
                 f"Movie: {item['title']}\n"
