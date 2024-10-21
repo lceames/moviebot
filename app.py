@@ -555,9 +555,6 @@ def swaig_handler():
         
         host_url = request.host_url.rstrip('/')  # Get the request host URL
 
-
-        
-
         for func in SWAIG_FUNCTION_SIGNATURES:
             split_url = urlsplit(host_url)
 
@@ -568,6 +565,7 @@ def swaig_handler():
 
             new_url = urlunsplit((split_url.scheme, netloc, split_url.path, split_url.query, split_url.fragment))
             SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{new_url}/swaig"
+        
         if requested_functions == '':
             requested_functions = avaliable_functions
 
