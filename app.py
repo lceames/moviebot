@@ -546,6 +546,9 @@ def swaig_handler():
 
         host_url = request.host_url.rstrip('/')  # Get the request host URL
 
+        for func in SWAIG_FUNCTION_SIGNATURES:
+            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{host_url}/swaig"
+
         response = [
             SWAIG_FUNCTION_SIGNATURES[func] 
             for func in requested_functions 
