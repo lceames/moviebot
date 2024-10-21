@@ -536,6 +536,7 @@ def swaig_handler():
 
     if action == "get_signature":
         requested_functions = data.get("functions")
+        print(f"Requested functions: {requested_functions}")
 
         if not requested_functions:
             requested_functions = list(SWAIG_FUNCTION_SIGNATURES.keys())
