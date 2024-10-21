@@ -528,49 +528,67 @@ SWAIG_FUNCTION_SIGNATURES = {
     }
 }
 
-# Define the /swaig handler
 @app.route('/swaig', methods=['POST'])
 def swaig_handler():
     data = request.json
     action = data.get('action')
 
     if action == "get_signature":
-        requested_functions = data.get("functions", [])
+        requested_functions = data.get("functions")
+        print(f"requested_functionss: {requested_functions}")
+
+        if (isinstance(requested_functions, list) and requested_functions == [None]):
+            requested_functions = list(SWAIG_FUNCTION_SIGNATURES.keys())
+        elif isinstance(requested_functions, str):
+            requested_functions = [requested_functions]
+        elif not isinstance(requested_functions, list):
+            return jsonify({"error": "'functions' must be a list or a single function name string"}), 400
+
         host_url = request.host_url.rstrip('/')  # Get the request host URL
 
         response = [
-            {**SWAIG_FUNCTION_SIGNATURES[func], "web_hook_url": f"{host_url}/swaig"}
-            for func in requested_functions
+            SWAIG_FUNCTION_SIGNATURES[func] 
+            for func in requested_functions 
             if func in SWAIG_FUNCTION_SIGNATURES
         ]
-        return jsonify(response)
+
+        missing_functions = [
+            func for func in requested_functions 
+            if func not in SWAIG_FUNCTION_SIGNATURES
+        ]
+        if missing_functions:
+            print(f"Missing functions: {missing_functions}")
+        
+        print(f"Response: {response}")
+        return jsonify(response)  # Return the response with the requested function signatures
 
     else:
         function_name = data.get('function')
+        print(f"Function name: {function_name}")
         argument = data.get('argument', {})
         params = argument.get('parsed', [{}])[0]  # Extract the first parsed argument
-        print(f"function_name: {function_name}, params: {params}")
-        # Map function names to actual functions
+        print(f"Function name: {function_name}, Params: {params}")
         function_map = {
-            "search_movie": search_movie,
-            "get_movie_details": get_movie_details,
-            "discover_movies": discover_movies,
-            "get_trending_movies": get_trending_movies,
-            "get_movie_recommendations": get_movie_recommendations,
-            "get_genre_list": get_genre_list,
-            "get_upcoming_movies": get_upcoming_movies,
-            "get_now_playing_movies": get_now_playing_movies,
-            "get_similar_movies": get_similar_movies,
-            "multi_search": multi_search,
-            "get_movie_credits": get_movie_credits,
-            "get_person_details": get_person_details
+            func_name: globals()[func_name] 
+            for func_name in SWAIG_FUNCTION_SIGNATURES.keys() 
+            if func_name in globals()
         }
 
         if function_name in function_map:
-            response = function_map[function_name](**params)
-            return jsonify({ "response": response })
+            try:
+                response = function_map[function_name](**params)
+                return jsonify({"response": response})
+            except TypeError as e:
+                # Handle cases where the provided params do not match the function signature
+                print(f"Error executing function '{function_name}': {e}")
+                return jsonify({"error": f"Invalid parameters for function '{function_name}'"}), 400
+            except Exception as e:
+                # Handle other exceptions
+                print(f"Unexpected error: {e}")
+                return jsonify({"error": "An unexpected error occurred"}), 500
         else:
             return jsonify({"error": "Function not found"}), 404
+        
 @app.route('/', methods=['GET'])
 def root():
     return send_file('moviebot.html')
