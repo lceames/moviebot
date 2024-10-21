@@ -560,9 +560,8 @@ def swaig_handler():
             if func not in SWAIG_FUNCTION_SIGNATURES
         ]
         if missing_functions:
-            print(f"Missing functions: {missing_functions}")
+            return jsonify({"error": f"Functions not found: {', '.join(missing_functions)}"}), 404
         
-        print(f"Response: {response}")
         return jsonify(response)  # Return the response with the requested function signatures
 
     else:
@@ -582,12 +581,8 @@ def swaig_handler():
                 response = function_map[function_name](**params)
                 return jsonify({"response": response})
             except TypeError as e:
-                # Handle cases where the provided params do not match the function signature
-                print(f"Error executing function '{function_name}': {e}")
                 return jsonify({"error": f"Invalid parameters for function '{function_name}'"}), 400
             except Exception as e:
-                # Handle other exceptions
-                print(f"Unexpected error: {e}")
                 return jsonify({"error": "An unexpected error occurred"}), 500
         else:
             return jsonify({"error": "Function not found"}), 404
