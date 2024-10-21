@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, send_file
+from urllib.parse import urlsplit, urlunsplit
 import requests
 from flask_httpauth import HTTPBasicAuth
 import os
@@ -554,9 +555,19 @@ def swaig_handler():
         
         host_url = request.host_url.rstrip('/')  # Get the request host URL
 
-        for func in SWAIG_FUNCTION_SIGNATURES:
-            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{host_url}/swaig"
 
+        
+
+        for func in SWAIG_FUNCTION_SIGNATURES:
+            split_url = urlsplit(host_url)
+
+            if HTTP_USERNAME and HTTP_PASSWORD:
+                netloc = f"{HTTP_USERNAME}:{HTTP_PASSWORD}@{split_url.netloc}"
+            else:
+                netloc = split_url.netloc
+
+            new_url = urlunsplit((split_url.scheme, netloc, split_url.path, split_url.query, split_url.fragment))
+            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{new_url}/swaig"
         if requested_functions == '':
             requested_functions = avaliable_functions
 
