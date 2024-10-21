@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify, send_file
+import requests
 from flask_httpauth import HTTPBasicAuth
 import os
 
 app = Flask(__name__)
-
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 HTTP_USERNAME = os.getenv("HTTP_USERNAME")
@@ -541,6 +541,7 @@ SWAIG_FUNCTION_SIGNATURES = {
 @auth.login_required
 def swaig_handler():
     data = request.json
+    print(f"Received data: {data}")
     action = data.get('action')
     print(f"Received action: {action}")
 
@@ -589,6 +590,7 @@ def swaig_handler():
         print(f"Available functions: {list(function_map.keys())}")
 
         if function_name in function_map:
+
             try:
                 response = function_map[function_name](**params)
                 return jsonify({"response": response})

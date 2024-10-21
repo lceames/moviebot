@@ -17,9 +17,10 @@
    - [Function: `get_now_playing_movies`](#function-get_now_playing_movies)
    - [Function: `get_similar_movies`](#function-get_similar_movies)
    - [Function: `multi_search`](#function-multi_search)
-4. [Sample Prompt for the AI Agent](#sample-prompt-for-the-ai-agent)
-5. [Conclusion](#conclusion)
-6. [Appendix: TMDb API Integration Notes](#appendix-tmdb-api-integration-notes)
+4. [Environment Variables](#environment-variables)  // Added new section
+5. [Sample Prompt for the AI Agent](#sample-prompt-for-the-ai-agent)
+6. [Conclusion](#conclusion)
+7. [Appendix: TMDb API Integration Notes](#appendix-tmdb-api-integration-notes)
 
 ---
 
@@ -434,6 +435,18 @@ Offers alternatives to a movie the user is interested in.
 **Usage**:
 
 Handles broad searches when the user's intent is not specific.
+
+---
+
+## Environment Variables
+
+The application requires the following environment variables to be set:
+
+- **TMDB_API_KEY**: Your API key for accessing TMDb.
+- **HTTP_USERNAME**: The username for HTTP Basic Authentication.
+- **HTTP_PASSWORD**: The password for HTTP Basic Authentication.
+
+Ensure these variables are securely stored and accessed by the application to maintain security and functionality.
 
 ---
 
