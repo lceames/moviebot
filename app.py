@@ -535,17 +535,15 @@ def swaig_handler():
 
     if action == "get_signature":
         requested_functions = data.get("functions")
-        print(f"requested_functionss: {requested_functions}")
 
-        if (isinstance(requested_functions, list) and requested_functions == [None]):
+        if not requested_functions:
             requested_functions = list(SWAIG_FUNCTION_SIGNATURES.keys())
-        elif isinstance(requested_functions, str):
-            requested_functions = [requested_functions]
-        elif not isinstance(requested_functions, list):
-            return jsonify({"error": "'functions' must be a list or a single function name string"}), 400
-
+        print(f"requested_functionss: {requested_functions}")
+        
         host_url = request.host_url.rstrip('/')  # Get the request host URL
-
+        if requested_functions == '':
+            requested_functions = avaliable_functions
+        print(f"requested_functions: {requested_functions}")
         for func in SWAIG_FUNCTION_SIGNATURES:
             SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{host_url}/swaig"
 

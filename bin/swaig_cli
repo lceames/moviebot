@@ -52,8 +52,10 @@ def main():
 
     args = parser.parse_args()
 
+    function_names = args.function.split(',') if args.function else []
+
     if args.get_signatures:
-        signatures = get_signatures(args.url, [args.function])  # Pass as an array
+        signatures = get_signatures(args.url, function_names)  # Pass as an array
         print(json.dumps(signatures, indent=2))
     elif args.function:
         test_function(args.url, [args.function], args)  # Pass as an array
