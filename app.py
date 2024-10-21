@@ -1,13 +1,22 @@
 from flask import Flask, request, jsonify, send_file
+from flask_httpauth import HTTPBasicAuth
 import os
 
 app = Flask(__name__)
 
-# Define the functions for each SWAIG endpoint
-import requests
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+HTTP_USERNAME = os.getenv("HTTP_USERNAME")
+HTTP_PASSWORD = os.getenv("HTTP_PASSWORD")
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
+
+auth = HTTPBasicAuth()
+
+@auth.verify_password
+def verify_password(username, password):
+    if username == HTTP_USERNAME and password == HTTP_PASSWORD:
+        return True
+    return False
 
 def call_tmdb_api(endpoint, params):
     url = f"{TMDB_BASE_URL}{endpoint}"
@@ -529,6 +538,7 @@ SWAIG_FUNCTION_SIGNATURES = {
 }
 
 @app.route('/swaig', methods=['POST'])
+@auth.login_required
 def swaig_handler():
     data = request.json
     action = data.get('action')
@@ -588,14 +598,14 @@ def swaig_handler():
                 return jsonify({"error": "An unexpected error occurred"}), 500
         else:
             return jsonify({"error": "Function not found"}), 404
-        
-@app.route('/', methods=['GET'])
-def root():
-    return send_file('moviebot.html')
 
-@app.route('/swaig', methods=['GET'])
-def home():
-    return send_file('moviebot.html')
+@app.route('/', methods=['GET'])
+@app.route('/swaig', methods=['GET'])       
+def serve_moviebot_html():
+    try:
+        return send_file('moviebot.html')
+    except Exception as e:
+        return jsonify({"error": "Failed to serve moviebot.html"}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
