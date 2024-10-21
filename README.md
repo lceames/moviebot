@@ -51,6 +51,52 @@ The AI agent is built on the following components:
 3. **Configure API Keys**:
    Replace `YOUR_API_KEY` in the code with your actual TMDb API key.
 
+### Deploying on Dokku
+
+1. **Create a Dokku App**:
+   Ensure you have Dokku installed and set up on your server. Create a new Dokku app:
+   ```bash
+   dokku apps:create moviebot
+   ```
+
+2. **Set Environment Variables**:
+   Set the necessary environment variables, including your TMDb API key:
+   ```bash
+   dokku config:set moviebot TMDB_API_KEY=your_tmdb_api_key
+   ```
+
+3. **Deploy the App**:
+   Add your Dokku server as a Git remote and push the code:
+   ```bash
+   git remote add dokku dokku@your_dokku_server:moviebot
+   git push dokku main
+   ```
+
+4. **Run Migrations (if any)**:
+   If your application requires database migrations, run them using:
+   ```bash
+   dokku run moviebot python manage.py migrate
+   ```
+
+5. **Set Up Let's Encrypt**:
+   To secure your app with SSL, use Dokku's Let's Encrypt plugin. First, ensure the plugin is installed:
+   ```bash
+   sudo dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
+   ```
+
+   Then, enable Let's Encrypt for your app:
+   ```bash
+   dokku letsencrypt:enable moviebot
+   ```
+
+   To automatically renew the certificates, set up a cron job:
+   ```bash
+   dokku letsencrypt:cron-job --add
+   ```
+
+6. **Access the App**:
+   Your app should now be running on your Dokku server with SSL enabled. Access it via the URL provided by Dokku.
+
 ### Usage
 
 Run the AI agent using the command:
@@ -87,4 +133,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact
 
 For questions or support, please contact [brian@signalwire.com](mailto:brian@signalwire.com).
-

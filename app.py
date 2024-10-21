@@ -347,7 +347,7 @@ def format_person_details(person):
 
 SWAIG_FUNCTION_SIGNATURES = {
     "get_movie_credits": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve cast and crew information for a movie",
         "function": "get_movie_credits",
         "argument": {
@@ -360,7 +360,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_person_details": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve detailed information about a person",
         "function": "get_person_details",
         "argument": {
@@ -374,7 +374,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "search_movie": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Search for movies by title",
         "function": "search_movie",
         "argument": {
@@ -392,7 +392,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_movie_details": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve detailed information about a movie",
         "function": "get_movie_details",
         "argument": {
@@ -406,7 +406,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "discover_movies": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Discover movies by different criteria",
         "function": "discover_movies",
         "argument": {
@@ -432,7 +432,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_trending_movies": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of movies that are currently trending",
         "function": "get_trending_movies",
         "argument": {
@@ -446,7 +446,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_movie_recommendations": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Get recommendations based on a specific movie",
         "function": "get_movie_recommendations",
         "argument": {
@@ -460,7 +460,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_genre_list": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve the list of official genres",
         "function": "get_genre_list",
         "argument": {
@@ -472,7 +472,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_upcoming_movies": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of upcoming movies",
         "function": "get_upcoming_movies",
         "argument": {
@@ -485,7 +485,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_now_playing_movies": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of movies currently playing in theaters",
         "function": "get_now_playing_movies",
         "argument": {
@@ -498,7 +498,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_similar_movies": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of movies similar to a given movie",
         "function": "get_similar_movies",
         "argument": {
@@ -511,7 +511,7 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "multi_search": {
-        "web_hook_url": "https://swaig-server.signalwire.me/swaig",
+        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Search for movies, TV shows, and people in a single request",
         "function": "multi_search",
         "argument": {
@@ -532,20 +532,21 @@ SWAIG_FUNCTION_SIGNATURES = {
 def swaig_handler():
     data = request.json
     action = data.get('action')
+    print(f"Received action: {action}")
 
     if action == "get_signature":
         requested_functions = data.get("functions")
 
         if not requested_functions:
             requested_functions = list(SWAIG_FUNCTION_SIGNATURES.keys())
-        print(f"requested_functionss: {requested_functions}")
         
         host_url = request.host_url.rstrip('/')  # Get the request host URL
-        if requested_functions == '':
-            requested_functions = avaliable_functions
-        print(f"requested_functions: {requested_functions}")
+
         for func in SWAIG_FUNCTION_SIGNATURES:
             SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{host_url}/swaig"
+
+        if requested_functions == '':
+            requested_functions = avaliable_functions
 
         response = [
             SWAIG_FUNCTION_SIGNATURES[func] 
@@ -557,9 +558,9 @@ def swaig_handler():
             func for func in requested_functions 
             if func not in SWAIG_FUNCTION_SIGNATURES
         ]
-        if missing_functions:
-            return jsonify({"error": f"Functions not found: {', '.join(missing_functions)}"}), 404
-        print(f"response: {response}")
+
+        print(f"missing_functions: {missing_functions}")
+
         return jsonify(response)  # Return the response with the requested function signatures
 
     else:
@@ -568,11 +569,13 @@ def swaig_handler():
         argument = data.get('argument', {})
         params = argument.get('parsed', [{}])[0]  # Extract the first parsed argument
         print(f"Function name: {function_name}, Params: {params}")
+
         function_map = {
             func_name: globals()[func_name] 
             for func_name in SWAIG_FUNCTION_SIGNATURES.keys() 
             if func_name in globals()
         }
+        print(f"Available functions: {list(function_map.keys())}")
 
         if function_name in function_map:
             try:
