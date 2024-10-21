@@ -561,7 +561,7 @@ def swaig_handler():
         ]
         if missing_functions:
             return jsonify({"error": f"Functions not found: {', '.join(missing_functions)}"}), 404
-        
+        print(f"response: {response}")
         return jsonify(response)  # Return the response with the requested function signatures
 
     else:
