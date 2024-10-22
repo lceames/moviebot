@@ -527,7 +527,7 @@ SWAIG_FUNCTION_SIGNATURES = {
 }
 
 @app.route('/swaig', methods=['POST'])
-@auth.login_required
+@auth.verify_password
 def swaig_handler():
     data = request.json
     print(f"Received data: {data}")
