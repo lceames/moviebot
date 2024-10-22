@@ -357,7 +357,6 @@ def format_person_details(person):
 
 SWAIG_FUNCTION_SIGNATURES = {
     "get_movie_credits": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve cast and crew information for a movie",
         "function": "get_movie_credits",
         "argument": {
@@ -370,7 +369,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_person_details": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve detailed information about a person",
         "function": "get_person_details",
         "argument": {
@@ -384,7 +382,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "search_movie": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Search for movies by title",
         "function": "search_movie",
         "argument": {
@@ -402,7 +399,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_movie_details": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve detailed information about a movie",
         "function": "get_movie_details",
         "argument": {
@@ -416,7 +412,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "discover_movies": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Discover movies by different criteria",
         "function": "discover_movies",
         "argument": {
@@ -442,7 +437,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_trending_movies": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of movies that are currently trending",
         "function": "get_trending_movies",
         "argument": {
@@ -456,7 +450,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_movie_recommendations": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Get recommendations based on a specific movie",
         "function": "get_movie_recommendations",
         "argument": {
@@ -470,7 +463,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_genre_list": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve the list of official genres",
         "function": "get_genre_list",
         "argument": {
@@ -482,7 +474,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_upcoming_movies": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of upcoming movies",
         "function": "get_upcoming_movies",
         "argument": {
@@ -495,7 +486,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_now_playing_movies": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of movies currently playing in theaters",
         "function": "get_now_playing_movies",
         "argument": {
@@ -508,7 +498,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_similar_movies": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Retrieve a list of movies similar to a given movie",
         "function": "get_similar_movies",
         "argument": {
@@ -521,7 +510,6 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "multi_search": {
-        "web_hook_url": "https://swaig-server/swaig",
         "purpose": "Search for movies, TV shows, and people in a single request",
         "function": "multi_search",
         "argument": {
@@ -565,8 +553,8 @@ def swaig_handler():
 
             new_url = urlunsplit((split_url.scheme, netloc, split_url.path, split_url.query, split_url.fragment))
             SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{new_url}/swaig"
-            SWAIG_FUNCTION_SIGNATURES[func]["username"] = HTTP_USERNAME
-            SWAIG_FUNCTION_SIGNATURES[func]["password"] = HTTP_PASSWORD
+            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_auth_user"] = HTTP_USERNAME
+            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_auth_pass"] = HTTP_PASSWORD
         
         if requested_functions == '':
             requested_functions = avaliable_functions
