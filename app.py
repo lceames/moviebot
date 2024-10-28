@@ -5,6 +5,7 @@ from flask_httpauth import HTTPBasicAuth
 import os
 
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 HTTP_USERNAME = os.getenv("HTTP_USERNAME")
