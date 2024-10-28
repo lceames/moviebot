@@ -553,6 +553,8 @@ def swaig_handler():
 
             new_url = urlunsplit((split_url.scheme, netloc, split_url.path, split_url.query, split_url.fragment))
             SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{new_url}/swaig"
+            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_auth_user"] = HTTP_USERNAME
+            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_auth_pass"] = HTTP_PASSWORD
         
         if requested_functions == '':
             requested_functions = avaliable_functions
@@ -570,10 +572,7 @@ def swaig_handler():
 
         print(f"missing_functions: {missing_functions}")
 
-        return app.response_class(
-            response=json.dumps(response, indent=None),
-            mimetype='application/json'
-        )
+        return jsonify(response)  # Return the response with the requested function signatures
 
     else:
         function_name = data.get('function')
