@@ -357,9 +357,9 @@ def format_person_details(person):
 
 SWAIG_FUNCTION_SIGNATURES = {
     "get_movie_credits": {
-        "purpose": "Retrieve cast and crew information for a movie",
+        "description": "Retrieve cast and crew information for a movie",
         "function": "get_movie_credits",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
@@ -369,9 +369,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_person_details": {
-        "purpose": "Retrieve detailed information about a person",
+        "description": "Retrieve detailed information about a person",
         "function": "get_person_details",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "person_id": {"type": "integer", "description": "The TMDb ID of the person."},
@@ -382,9 +382,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "search_movie": {
-        "purpose": "Search for movies by title",
+        "description": "Search for movies by title",
         "function": "search_movie",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "The movie title to search for."},
@@ -399,9 +399,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_movie_details": {
-        "purpose": "Retrieve detailed information about a movie",
+        "description": "Retrieve detailed information about a movie",
         "function": "get_movie_details",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
@@ -412,9 +412,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "discover_movies": {
-        "purpose": "Discover movies by different criteria",
+        "description": "Discover movies by different criteria",
         "function": "discover_movies",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
@@ -437,9 +437,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_trending_movies": {
-        "purpose": "Retrieve a list of movies that are currently trending",
+        "description": "Retrieve a list of movies that are currently trending",
         "function": "get_trending_movies",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "time_window": {"type": "string", "description": "Time window to fetch trends for ('day' or 'week').", "enum": ["day", "week"], "default": "week"},
@@ -450,9 +450,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_movie_recommendations": {
-        "purpose": "Get recommendations based on a specific movie",
+        "description": "Get recommendations based on a specific movie",
         "function": "get_movie_recommendations",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
@@ -463,9 +463,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_genre_list": {
-        "purpose": "Retrieve the list of official genres",
+        "description": "Retrieve the list of official genres",
         "function": "get_genre_list",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "language": {"type": "string", "description": "Language of the results.", "default": "en-US"}
@@ -474,9 +474,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_upcoming_movies": {
-        "purpose": "Retrieve a list of upcoming movies",
+        "description": "Retrieve a list of upcoming movies",
         "function": "get_upcoming_movies",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
@@ -486,9 +486,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_now_playing_movies": {
-        "purpose": "Retrieve a list of movies currently playing in theaters",
+        "description": "Retrieve a list of movies currently playing in theaters",
         "function": "get_now_playing_movies",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
@@ -498,9 +498,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "get_similar_movies": {
-        "purpose": "Retrieve a list of movies similar to a given movie",
+        "description": "Retrieve a list of movies similar to a given movie",
         "function": "get_similar_movies",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
@@ -510,9 +510,9 @@ SWAIG_FUNCTION_SIGNATURES = {
         }
     },
     "multi_search": {
-        "purpose": "Search for movies, TV shows, and people in a single request",
+        "description": "Search for movies, TV shows, and people in a single request",
         "function": "multi_search",
-        "argument": {
+        "parameters": {
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "The search query."},
