@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify, send_file
-from urllib.parse import urlsplit, urlunsplit
 import requests
-from flask_httpauth import HTTPBasicAuth
 import os
+from signalwire_swaig.core import SWAIG, Parameter
 
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
@@ -12,13 +11,7 @@ HTTP_USERNAME = os.getenv("HTTP_USERNAME")
 HTTP_PASSWORD = os.getenv("HTTP_PASSWORD")
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
-auth = HTTPBasicAuth()
-
-@auth.verify_password
-def verify_password(username, password):
-    if username == HTTP_USERNAME and password == HTTP_PASSWORD:
-        return True
-    return False
+swaig = SWAIG(app, auth=(HTTP_USERNAME, HTTP_PASSWORD) if HTTP_USERNAME and HTTP_PASSWORD else None)
 
 def call_tmdb_api(endpoint, params):
     url = f"{TMDB_BASE_URL}{endpoint}"
@@ -29,6 +22,14 @@ def call_tmdb_api(endpoint, params):
     else:
         return {"error": response.status_code, "message": response.text}
 
+@swaig.endpoint("Search for movies by title",
+    query=Parameter("string", "The movie title to search for"),
+    language=Parameter("string", "Language of the results", required=False),
+    page=Parameter("integer", "Page number for pagination", required=False),
+    include_adult=Parameter("boolean", "Whether to include adult content", required=False),
+    region=Parameter("string", "Specify a region to prioritize search results", required=False),
+    year=Parameter("integer", "Filter results by release year", required=False),
+    primary_release_year=Parameter("integer", "Filter results by primary release year", required=False))
 def search_movie(query, language="en-US", page=1, include_adult=False, region=None, year=None, primary_release_year=None):
     endpoint = "/search/movie"
     params = {
@@ -41,33 +42,160 @@ def search_movie(query, language="en-US", page=1, include_adult=False, region=No
         "primary_release_year": primary_release_year
     }
     response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
     if 'results' in response:
         return format_movie_search_results(response['results'])
-    
+    return response
+
+@swaig.endpoint("Get detailed movie information",
+    movie_id=Parameter("integer", "The TMDb ID of the movie"),
+    language=Parameter("string", "Language of the results", required=False))
+def get_movie_details(movie_id, language="en-US"):
+    endpoint = f"/movie/{movie_id}"
+    params = {"language": language}
+    response = call_tmdb_api(endpoint, params)
+    if response and 'id' in response:
+        return format_movie_details(response)
+    return response
+
+@swaig.endpoint("Get movie recommendations",
+    movie_id=Parameter("integer", "The TMDb ID of the movie"),
+    language=Parameter("string", "Language of the results", required=False))
+def get_movie_recommendations(movie_id, language="en-US"):
+    endpoint = f"/movie/{movie_id}/recommendations"
+    params = {"language": language}
+    response = call_tmdb_api(endpoint, params)
+    if 'results' in response:
+        return format_movie_recommendations_results(response['results'])
+    return response
+
+@swaig.endpoint("Get trending movies",
+    time_window=Parameter("string", "Time window (day/week)", required=False),
+    language=Parameter("string", "Language of the results", required=False))
+def get_trending_movies(time_window="week", language="en-US"):
+    endpoint = f"/trending/movie/{time_window}"
+    params = {"language": language}
+    response = call_tmdb_api(endpoint, params)
+    if 'results' in response:
+        return format_trending_movies_results(response['results'])
+    return response
+
+@swaig.endpoint("Discover movies by different criteria",
+    language=Parameter("string", "Language of the results", required=False),
+    region=Parameter("string", "Specify a region to filter release dates", required=False),
+    sort_by=Parameter("string", "Sort results by criteria", required=False),
+    include_adult=Parameter("boolean", "Whether to include adult content", required=False),
+    include_video=Parameter("boolean", "Whether to include movies that have a video", required=False),
+    page=Parameter("integer", "Page number for pagination", required=False),
+    primary_release_year=Parameter("integer", "Filter movies released in a specific year", required=False),
+    primary_release_date_gte=Parameter("string", "Filter movies released on or after this date (YYYY-MM-DD)", required=False),
+    primary_release_date_lte=Parameter("string", "Filter movies released on or before this date (YYYY-MM-DD)", required=False),
+    with_genres=Parameter("string", "Comma-separated genre IDs to filter by", required=False),
+    with_cast=Parameter("string", "Comma-separated person IDs to filter by cast", required=False),
+    with_crew=Parameter("string", "Comma-separated person IDs to filter by crew", required=False),
+    with_keywords=Parameter("string", "Comma-separated keyword IDs to filter by", required=False),
+    with_runtime_gte=Parameter("integer", "Filter movies with runtime greater than or equal to this value", required=False),
+    with_runtime_lte=Parameter("integer", "Filter movies with runtime less than or equal to this value", required=False))
+def discover_movies(language="en-US", region=None, sort_by="popularity.desc", include_adult=False, include_video=False, 
+                   page=1, primary_release_year=None, primary_release_date_gte=None, primary_release_date_lte=None,
+                   with_genres=None, with_cast=None, with_crew=None, with_keywords=None, with_runtime_gte=None, with_runtime_lte=None):
+    endpoint = "/discover/movie"
+    params = locals()
+    response = call_tmdb_api(endpoint, params)
+    if 'results' in response:
+        return format_discover_movies_results(response['results'])
+    return response
+
+@swaig.endpoint("Get genre list",
+    language=Parameter("string", "Language of the results", required=False))
+def get_genre_list(language="en-US"):
+    endpoint = "/genre/movie/list"
+    params = {"language": language}
+    response = call_tmdb_api(endpoint, params)
+    if 'genres' in response:
+        return format_genre_list(response['genres'])
+    return response
+
+@swaig.endpoint("Get upcoming movies",
+    language=Parameter("string", "Language of the results", required=False),
+    region=Parameter("string", "Specify a region to filter release dates", required=False))
+def get_upcoming_movies(language="en-US", region=None):
+    endpoint = "/movie/upcoming"
+    params = {"language": language, "region": region}
+    response = call_tmdb_api(endpoint, params)
+    if 'results' in response:
+        return format_upcoming_movies_results(response['results'])
+    return response
+
+@swaig.endpoint("Get now playing movies",
+    language=Parameter("string", "Language of the results", required=False),
+    region=Parameter("string", "Specify a region to filter release dates", required=False))
+def get_now_playing_movies(language="en-US", region=None):
+    endpoint = "/movie/now_playing"
+    params = {"language": language, "region": region}
+    response = call_tmdb_api(endpoint, params)
+    if 'results' in response:
+        return format_now_playing_movies_results(response['results'])
+    return response
+
+@swaig.endpoint("Get similar movies",
+    movie_id=Parameter("integer", "The TMDb ID of the movie"),
+    language=Parameter("string", "Language of the results", required=False))
+def get_similar_movies(movie_id, language="en-US"):
+    endpoint = f"/movie/{movie_id}/similar"
+    params = {"language": language}
+    response = call_tmdb_api(endpoint, params)
+    if 'results' in response:
+        return format_similar_movies_results(response['results'])
+    return response
+
+@swaig.endpoint("Multi-search for movies, TV shows, and people",
+    query=Parameter("string", "The search query"),
+    language=Parameter("string", "Language of the results", required=False),
+    page=Parameter("integer", "Page number for pagination", required=False),
+    include_adult=Parameter("boolean", "Whether to include adult content", required=False),
+    region=Parameter("string", "Specify a region to prioritize search results", required=False))
+def multi_search(query, language="en-US", page=1, include_adult=False, region=None):
+    endpoint = "/search/multi"
+    params = locals()
+    response = call_tmdb_api(endpoint, params)
+    if 'results' in response:
+        return format_multi_search_results(response['results'])
+    return response
+
+@swaig.endpoint("Get movie credits",
+    movie_id=Parameter("integer", "The TMDb ID of the movie"),
+    language=Parameter("string", "Language of the results", required=False))
+def get_movie_credits(movie_id, language="en-US"):
+    endpoint = f"/movie/{movie_id}/credits"
+    params = {"language": language}
+    response = call_tmdb_api(endpoint, params)
+    if 'cast' in response or 'crew' in response:
+        return format_movie_credits(response)
+    return response
+
+@swaig.endpoint("Get person details",
+    person_id=Parameter("integer", "The TMDb ID of the person"),
+    language=Parameter("string", "Language of the results", required=False),
+    append_to_response=Parameter("string", "Additional requests to append to the result", required=False))
+def get_person_details(person_id, language="en-US", append_to_response=None):
+    endpoint = f"/person/{person_id}"
+    params = {"language": language}
+    if append_to_response:
+        params["append_to_response"] = append_to_response
+    response = call_tmdb_api(endpoint, params)
+    if 'id' in response:
+        return format_person_details(response)
     return response
 
 def format_movie_search_results(results):
     explanation = "These are the search results for movies based on your query:\n"
     formatted_results = [explanation]
-    for movie in results[:5]:  # Limit to the first 5 movies
+    for movie in results[:5]:
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie.get('release_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return "\n".join(formatted_results)
-
-def get_movie_details(movie_id, language="en-US"):
-    endpoint = f"/movie/{movie_id}"
-    params = {"language": language}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the response if successful
-    if response and 'id' in response:
-        return format_movie_details(response)
-    
-    return response
 
 def format_movie_details(movie):
     explanation = "Here are the detailed information about the movie:\n"
@@ -98,53 +226,15 @@ def format_movie_details(movie):
     )
     return "\n".join(formatted_details)
 
-def discover_movies(language="en-US", region=None, sort_by="popularity.desc", include_adult=False, include_video=False, page=1, primary_release_year=None, primary_release_date_gte=None, primary_release_date_lte=None, with_genres=None, with_cast=None, with_crew=None, with_keywords=None, with_runtime_gte=None, with_runtime_lte=None):
-    endpoint = "/discover/movie"
-    params = {
-        "language": language,
-        "region": region,
-        "sort_by": sort_by,
-        "include_adult": include_adult,
-        "include_video": include_video,
-        "page": page,
-        "primary_release_year": primary_release_year,
-        "primary_release_date_gte": primary_release_date_gte,
-        "primary_release_date_lte": primary_release_date_lte,
-        "with_genres": with_genres,
-        "with_cast": with_cast,
-        "with_crew": with_crew,
-        "with_keywords": with_keywords,
-        "with_runtime_gte": with_runtime_gte,
-        "with_runtime_lte": with_runtime_lte
-    }
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
-    if 'results' in response:
-        return format_discover_movies_results(response['results'])
-    
-    return response
-
-def format_discover_movies_results(results):
-    explanation = "These are the movies discovered based on your criteria:\n"
+def format_movie_recommendations_results(results):
+    explanation = "These are the recommended movies based on your selection:\n"
     formatted_results = [explanation]
-    for movie in results[:5]:  # Limit to the first 5 movies
+    for movie in results[:5]:
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return "\n".join(formatted_results)
-
-def get_trending_movies(time_window="week", language="en-US"):
-    endpoint = f"/trending/movie/{time_window}"
-    params = {"language": language}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
-    if 'results' in response:
-        return format_trending_movies_results(response['results'])
-    
-    return response
 
 def format_trending_movies_results(results):
     explanation = "These are the trending movies for the selected time window:\n"
@@ -156,37 +246,15 @@ def format_trending_movies_results(results):
         )
     return "\n".join(formatted_results)
 
-def get_movie_recommendations(movie_id, language="en-US"):
-    endpoint = f"/movie/{movie_id}/recommendations"
-    params = {"language": language}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
-    if 'results' in response:
-        return format_movie_recommendations_results(response['results'])
-    
-    return response
-
-def format_movie_recommendations_results(results):
-    explanation = "These are the recommended movies based on your selection:\n"
+def format_discover_movies_results(results):
+    explanation = "These are the movies discovered based on your criteria:\n"
     formatted_results = [explanation]
-    for movie in results[:5]:  # Limit to the first 5 movies
+    for movie in results[:5]:
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return "\n".join(formatted_results)
-
-def get_genre_list(language="en-US"):
-    endpoint = "/genre/movie/list"
-    params = {"language": language}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the genres if the response is successful
-    if 'genres' in response:
-        return format_genre_list(response['genres'])
-    
-    return response
 
 def format_genre_list(genres):
     explanation = "Here is the list of available movie genres with their IDs:\n"
@@ -197,152 +265,78 @@ def format_genre_list(genres):
         )
     return "\n".join(formatted_genres)
 
-def get_upcoming_movies(language="en-US", region=None):
-    endpoint = "/movie/upcoming"
-    params = {"language": language, "region": region}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
-    if 'results' in response:
-        return format_upcoming_movies_results(response['results'])
-    
-    return response
-
 def format_upcoming_movies_results(results):
     explanation = "These are the upcoming movies:\n"
     formatted_results = [explanation]
-    for movie in results[:10]:  # Limit to the first 10 movies
+    for movie in results[:10]:
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return "\n".join(formatted_results)
-
-def get_now_playing_movies(language="en-US", region=None):
-    endpoint = "/movie/now_playing"
-    params = {"language": language, "region": region}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
-    if 'results' in response:
-        return format_now_playing_movies_results(response['results'])
-    
-    return response
 
 def format_now_playing_movies_results(results):
     explanation = "These are the movies currently playing in theaters:\n"
     formatted_results = [explanation]
-    for movie in results[:10]:  # Limit to the first 10 movies
-        genre_ids = movie.get('genre_ids', [])
-        formatted_results.append(
-            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}\n"
-        )
-    return "\n".join(formatted_results)
-
-def get_similar_movies(movie_id, language="en-US"):
-    endpoint = f"/movie/{movie_id}/similar"
-    params = {"language": language}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
-    if 'results' in response:
-        return format_similar_movies_results(response['results'])
-    
-    return response
-
-def format_similar_movies_results(results):
-    explanation = "These are movies similar to your selection:\n"
-    formatted_results = [explanation]
-    for movie in results[:5]:  # Limit to the first 5 movies
+    for movie in results[:10]:
         genre_ids = movie.get('genre_ids', [])
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
     return "\n".join(formatted_results)
 
-def multi_search(query, language="en-US", page=1, include_adult=False, region=None):
-    endpoint = "/search/multi"
-    params = {
-        "query": query,
-        "language": language,
-        "page": page,
-        "include_adult": include_adult,
-        "region": region
-    }
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the results if the response is successful
-    if 'results' in response:
-        return format_multi_search_results(response['results'])
-    
-    return response
+def format_similar_movies_results(results):
+    explanation = "These are movies similar to your selection:\n"
+    formatted_results = [explanation]
+    for movie in results[:5]:
+        genre_ids = movie.get('genre_ids', [])
+        formatted_results.append(
+            f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
+        )
+    return "\n".join(formatted_results)
 
 def format_multi_search_results(results):
     explanation = "These are the results from your multi-search query:\n"
     formatted_results = [explanation]
-    for item in results[:10]:  # Limit to the first 10 results
-        if item['media_type'] == '\nmovie':
+    for item in results[:10]:
+        if item['media_type'] == 'movie':
             genre_ids = item.get('genre_ids', [])
-            formatted_results.append("\nmovie:")
+            formatted_results.append("movie:")
             formatted_results.append(
                 f"id: {item['id']} title: {item['title']} release_date: {item['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
             )
         elif item['media_type'] == 'tv':
             genre_ids = item.get('genre_ids', [])
-            formatted_results.append("\ntv show:")
+            formatted_results.append("tv show:")
             formatted_results.append(
                 f"id: {item['id']} name: {item['name']} first_air_date: {item.get('first_air_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}"
             )
         elif item['media_type'] == 'person':
-            formatted_results.append("\nperson:")
+            formatted_results.append("person:")
             formatted_results.append(
                 f"name: {item['name']} known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])} known_for_department: {item['known_for_department']}"
             )
     return "\n".join(formatted_results)
-
-def get_movie_credits(movie_id, language="en-US"):
-    endpoint = f"/movie/{movie_id}/credits"
-    params = {"language": language}
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the response if successful
-    if 'cast' in response or 'crew' in response:
-        return format_movie_credits(response)
-    
-    return response
 
 def format_movie_credits(credits):
     explanation = "Here are the cast and crew details for the movie:\n"
     formatted_credits = [explanation]
     
     if 'cast' in credits:
-        formatted_credits.append("\ncast:")
+        formatted_credits.append("cast:")
         for member in credits['cast']:
             formatted_credits.append(
                 f"name: {member['name']} character: {member['character']}"
             )
     
     if 'crew' in credits:
-        formatted_credits.append("\ncrew:")
+        formatted_credits.append("crew:")
         for member in credits['crew']:
             formatted_credits.append(
                 f"name: {member['name']} department: {member['department']} job: {member['job']}"
             )
     
     return "\n".join(formatted_credits)
-
-def get_person_details(person_id, language="en-US", append_to_response=None):
-    endpoint = f"/person/{person_id}"
-    params = {"language": language}
-    if append_to_response:
-        params["append_to_response"] = append_to_response
-    response = call_tmdb_api(endpoint, params)
-    
-    # Format the response if successful
-    if 'id' in response:
-        return format_person_details(response)
-    
-    return response
 
 def format_person_details(person):
     explanation = "Here are the details about the person:\n"
@@ -355,249 +349,6 @@ def format_person_details(person):
         f"known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}"
     )
     return "\n".join(formatted_details)
-
-SWAIG_FUNCTION_SIGNATURES = {
-    "get_movie_credits": {
-        "description": "Retrieve cast and crew information for a movie",
-        "function": "get_movie_credits",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"}
-            },
-            "required": ["movie_id"]
-        }
-    },
-    "get_person_details": {
-        "description": "Retrieve detailed information about a person",
-        "function": "get_person_details",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "person_id": {"type": "integer", "description": "The TMDb ID of the person."},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "append_to_response": {"type": "string", "description": "Additional requests to append to the result."}
-            },
-            "required": ["person_id"]
-        }
-    },
-    "search_movie": {
-        "description": "Search for movies by title",
-        "function": "search_movie",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "query": {"type": "string", "description": "The movie title to search for."},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "page": {"type": "integer", "description": "Page number for pagination.", "default": 1},
-                "include_adult": {"type": "boolean", "description": "Whether to include adult content.", "default": False},
-                "region": {"type": "string", "description": "Specify a region to prioritize search results."},
-                "year": {"type": "integer", "description": "Filter results by release year."},
-                "primary_release_year": {"type": "integer", "description": "Filter results by primary release year."}
-            },
-            "required": ["query"]
-        }
-    },
-    "get_movie_details": {
-        "description": "Retrieve detailed information about a movie",
-        "function": "get_movie_details",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "append_to_response": {"type": "string", "description": "Additional requests to append to the result."}
-            },
-            "required": ["movie_id"]
-        }
-    },
-    "discover_movies": {
-        "description": "Discover movies by different criteria",
-        "function": "discover_movies",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "region": {"type": "string", "description": "Specify a region to filter release dates."},
-                "sort_by": {"type": "string", "description": "Sort results by criteria.", "default": "popularity.desc"},
-                "include_adult": {"type": "boolean", "description": "Whether to include adult content.", "default": False},
-                "include_video": {"type": "boolean", "description": "Whether to include movies that have a video.", "default": False},
-                "page": {"type": "integer", "description": "Page number for pagination.", "default": 1},
-                "primary_release_year": {"type": "integer", "description": "Filter movies released in a specific year."},
-                "primary_release_date_gte": {"type": "string", "description": "Filter movies released on or after this date (YYYY-MM-DD)."},
-                "primary_release_date_lte": {"type": "string", "description": "Filter movies released on or before this date (YYYY-MM-DD)."},
-                "with_genres": {"type": "string", "description": "Comma-separated genre IDs to filter by."},
-                "with_cast": {"type": "string", "description": "Comma-separated person IDs to filter by cast."},
-                "with_crew": {"type": "string", "description": "Comma-separated person IDs to filter by crew."},
-                "with_keywords": {"type": "string", "description": "Comma-separated keyword IDs to filter by."},
-                "with_runtime_gte": {"type": "integer", "description": "Filter movies with runtime greater than or equal to this value."},
-                "with_runtime_lte": {"type": "integer", "description": "Filter movies with runtime less than or equal to this value."}
-            },
-            "required": []
-        }
-    },
-    "get_trending_movies": {
-        "description": "Retrieve a list of movies that are currently trending",
-        "function": "get_trending_movies",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "time_window": {"type": "string", "description": "Time window to fetch trends for ('day' or 'week').", "enum": ["day", "week"], "default": "week"},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "page": {"type": "integer", "description": "Page number for pagination.", "default": 1}
-            },
-            "required": []
-        }
-    },
-    "get_movie_recommendations": {
-        "description": "Get recommendations based on a specific movie",
-        "function": "get_movie_recommendations",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "page": {"type": "integer", "description": "Page number for pagination.", "default": 1}
-            },
-            "required": ["movie_id"]
-        }
-    },
-    "get_genre_list": {
-        "description": "Retrieve the list of official genres",
-        "function": "get_genre_list",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"}
-            },
-            "required": []
-        }
-    },
-    "get_upcoming_movies": {
-        "description": "Retrieve a list of upcoming movies",
-        "function": "get_upcoming_movies",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "region": {"type": "string", "description": "Specify a region to filter release dates."}
-            },
-            "required": []
-        }
-    },
-    "get_now_playing_movies": {
-        "description": "Retrieve a list of movies currently playing in theaters",
-        "function": "get_now_playing_movies",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "region": {"type": "string", "description": "Specify a region to filter release dates."}
-            },
-            "required": []
-        }
-    },
-    "get_similar_movies": {
-        "description": "Retrieve a list of movies similar to a given movie",
-        "function": "get_similar_movies",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "movie_id": {"type": "integer", "description": "The TMDb ID of the movie."},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"}
-            },
-            "required": ["movie_id"]
-        }
-    },
-    "multi_search": {
-        "description": "Search for movies, TV shows, and people in a single request",
-        "function": "multi_search",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "query": {"type": "string", "description": "The search query."},
-                "language": {"type": "string", "description": "Language of the results.", "default": "en-US"},
-                "page": {"type": "integer", "description": "Page number for pagination.", "default": 1},
-                "include_adult": {"type": "boolean", "description": "Whether to include adult content.", "default": False},
-                "region": {"type": "string", "description": "Specify a region to prioritize search results."}
-            },
-            "required": ["query"]
-        }
-    }
-}
-
-@app.route('/swaig', methods=['POST'])
-@auth.verify_password
-def swaig_handler():
-    data = request.json
-    print(f"Received data: {data}")
-    action = data.get('action')
-    print(f"Received action: {action}")
-
-    if action == "get_signature":
-        requested_functions = data.get("functions")
-        print(f"Requested functions: {requested_functions}")
-
-        if not requested_functions:
-            requested_functions = list(SWAIG_FUNCTION_SIGNATURES.keys())
-        
-        host_url = request.host_url.rstrip('/')  # Get the request host URL
-
-        for func in SWAIG_FUNCTION_SIGNATURES:
-            split_url = urlsplit(host_url)
-
-            if HTTP_USERNAME and HTTP_PASSWORD:
-                netloc = f"{HTTP_USERNAME}:{HTTP_PASSWORD}@{split_url.netloc}"
-            else:
-                netloc = split_url.netloc
-
-            new_url = urlunsplit((split_url.scheme, netloc, split_url.path, split_url.query, split_url.fragment))
-            SWAIG_FUNCTION_SIGNATURES[func]["web_hook_url"] = f"{new_url}/swaig"
-        
-        if requested_functions == '':
-            requested_functions = avaliable_functions
-
-        response = [
-            SWAIG_FUNCTION_SIGNATURES[func] 
-            for func in requested_functions 
-            if func in SWAIG_FUNCTION_SIGNATURES
-        ]
-
-        missing_functions = [
-            func for func in requested_functions 
-            if func not in SWAIG_FUNCTION_SIGNATURES
-        ]
-
-        print(f"missing_functions: {missing_functions}")
-
-        return jsonify(response)  # Return the response with the requested function signatures
-
-    else:
-        function_name = data.get('function')
-        print(f"Function name: {function_name}")
-        argument = data.get('argument', {})
-        params = argument.get('parsed', [{}])[0]  # Extract the first parsed argument
-        print(f"Function name: {function_name}, Params: {params}")
-
-        function_map = {
-            func_name: globals()[func_name] 
-            for func_name in SWAIG_FUNCTION_SIGNATURES.keys() 
-            if func_name in globals()
-        }
-        print(f"Available functions: {list(function_map.keys())}")
-
-        if function_name in function_map:
-
-            try:
-                response = function_map[function_name](**params)
-                return jsonify({"response": response})
-            except TypeError as e:
-                return jsonify({"error": f"Invalid parameters for function '{function_name}'"}), 400
-            except Exception as e:
-                return jsonify({"error": "An unexpected error occurred"}), 500
-        else:
-            return jsonify({"error": "Function not found"}), 404
 
 @app.route('/', methods=['GET'])
 @app.route('/swaig', methods=['GET'])       
