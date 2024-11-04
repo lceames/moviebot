@@ -24,12 +24,12 @@ def call_tmdb_api(endpoint, params):
 
 @swaig.endpoint("Search for movies by title",
     query=Parameter("string", "The movie title to search for"),
-    language=Parameter("string", "Language of the results", required=False),
-    page=Parameter("integer", "Page number for pagination", required=False),
-    include_adult=Parameter("boolean", "Whether to include adult content", required=False),
-    region=Parameter("string", "Specify a region to prioritize search results", required=False),
-    year=Parameter("integer", "Filter results by release year", required=False),
-    primary_release_year=Parameter("integer", "Filter results by primary release year", required=False))
+    language=Parameter("string", "Language of the results"),
+    page=Parameter("integer", "Page number for pagination"),
+    include_adult=Parameter("boolean", "Whether to include adult content"),
+    region=Parameter("string", "Specify a region to prioritize search results"),
+    year=Parameter("integer", "Filter results by release year"),
+    primary_release_year=Parameter("integer", "Filter results by primary release year"))
 def search_movie(query, language="en-US", page=1, include_adult=False, region=None, year=None, primary_release_year=None):
     endpoint = "/search/movie"
     params = {
@@ -47,8 +47,8 @@ def search_movie(query, language="en-US", page=1, include_adult=False, region=No
     return response
 
 @swaig.endpoint("Get detailed movie information",
-    movie_id=Parameter("integer", "The TMDb ID of the movie"),
-    language=Parameter("string", "Language of the results", required=False))
+    movie_id=Parameter("integer", "The TMDb ID of the movie", required=True),
+    language=Parameter("string", "Language of the results"))
 def get_movie_details(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}"
     params = {"language": language}
@@ -58,8 +58,8 @@ def get_movie_details(movie_id, language="en-US"):
     return response
 
 @swaig.endpoint("Get movie recommendations",
-    movie_id=Parameter("integer", "The TMDb ID of the movie"),
-    language=Parameter("string", "Language of the results", required=False))
+    movie_id=Parameter("integer", "The TMDb ID of the movie", required=True),
+    language=Parameter("string", "Language of the results"))
 def get_movie_recommendations(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}/recommendations"
     params = {"language": language}
@@ -69,8 +69,8 @@ def get_movie_recommendations(movie_id, language="en-US"):
     return response
 
 @swaig.endpoint("Get trending movies",
-    time_window=Parameter("string", "Time window (day/week)", required=False),
-    language=Parameter("string", "Language of the results", required=False))
+    time_window=Parameter("string", "Time window (day/week)", enum=["day", "week"], required=True),
+    language=Parameter("string", "Language of the results"))
 def get_trending_movies(time_window="week", language="en-US"):
     endpoint = f"/trending/movie/{time_window}"
     params = {"language": language}
@@ -80,21 +80,21 @@ def get_trending_movies(time_window="week", language="en-US"):
     return response
 
 @swaig.endpoint("Discover movies by different criteria",
-    language=Parameter("string", "Language of the results", required=False),
-    region=Parameter("string", "Specify a region to filter release dates", required=False),
-    sort_by=Parameter("string", "Sort results by criteria", required=False),
-    include_adult=Parameter("boolean", "Whether to include adult content", required=False),
-    include_video=Parameter("boolean", "Whether to include movies that have a video", required=False),
-    page=Parameter("integer", "Page number for pagination", required=False),
-    primary_release_year=Parameter("integer", "Filter movies released in a specific year", required=False),
-    primary_release_date_gte=Parameter("string", "Filter movies released on or after this date (YYYY-MM-DD)", required=False),
-    primary_release_date_lte=Parameter("string", "Filter movies released on or before this date (YYYY-MM-DD)", required=False),
-    with_genres=Parameter("string", "Comma-separated genre IDs to filter by", required=False),
-    with_cast=Parameter("string", "Comma-separated person IDs to filter by cast", required=False),
-    with_crew=Parameter("string", "Comma-separated person IDs to filter by crew", required=False),
-    with_keywords=Parameter("string", "Comma-separated keyword IDs to filter by", required=False),
-    with_runtime_gte=Parameter("integer", "Filter movies with runtime greater than or equal to this value", required=False),
-    with_runtime_lte=Parameter("integer", "Filter movies with runtime less than or equal to this value", required=False))
+    language=Parameter("string", "Language of the results"),
+    region=Parameter("string", "Specify a region to filter release dates"),
+    sort_by=Parameter("string", "Sort results by criteria"),
+    include_adult=Parameter("boolean", "Whether to include adult content"),
+    include_video=Parameter("boolean", "Whether to include movies that have a video"),
+    page=Parameter("integer", "Page number for pagination"),
+    primary_release_year=Parameter("integer", "Filter movies released in a specific year"),
+    primary_release_date_gte=Parameter("string", "Filter movies released on or after this date (YYYY-MM-DD)"),
+    primary_release_date_lte=Parameter("string", "Filter movies released on or before this date (YYYY-MM-DD)"),
+    with_genres=Parameter("string", "Comma-separated genre IDs to filter by"),
+    with_cast=Parameter("string", "Comma-separated person IDs to filter by cast"),
+    with_crew=Parameter("string", "Comma-separated person IDs to filter by crew"),
+    with_keywords=Parameter("string", "Comma-separated keyword IDs to filter by"),
+    with_runtime_gte=Parameter("integer", "Filter movies with runtime greater than or equal to this value"),
+    with_runtime_lte=Parameter("integer", "Filter movies with runtime less than or equal to this value"))
 def discover_movies(language="en-US", region=None, sort_by="popularity.desc", include_adult=False, include_video=False, 
                    page=1, primary_release_year=None, primary_release_date_gte=None, primary_release_date_lte=None,
                    with_genres=None, with_cast=None, with_crew=None, with_keywords=None, with_runtime_gte=None, with_runtime_lte=None):
@@ -106,7 +106,7 @@ def discover_movies(language="en-US", region=None, sort_by="popularity.desc", in
     return response
 
 @swaig.endpoint("Get genre list",
-    language=Parameter("string", "Language of the results", required=False))
+    language=Parameter("string", "Language of the results", default="en-US", required=True))
 def get_genre_list(language="en-US"):
     endpoint = "/genre/movie/list"
     params = {"language": language}
@@ -116,8 +116,8 @@ def get_genre_list(language="en-US"):
     return response
 
 @swaig.endpoint("Get upcoming movies",
-    language=Parameter("string", "Language of the results", required=False),
-    region=Parameter("string", "Specify a region to filter release dates", required=False))
+    language=Parameter("string", "Language of the results", default="en-US"),
+    region=Parameter("string", "Specify a region to filter release dates"))
 def get_upcoming_movies(language="en-US", region=None):
     endpoint = "/movie/upcoming"
     params = {"language": language, "region": region}
@@ -127,8 +127,8 @@ def get_upcoming_movies(language="en-US", region=None):
     return response
 
 @swaig.endpoint("Get now playing movies",
-    language=Parameter("string", "Language of the results", required=False),
-    region=Parameter("string", "Specify a region to filter release dates", required=False))
+    language=Parameter("string", "Language of the results"),
+    region=Parameter("string", "Specify a region to filter release dates"))
 def get_now_playing_movies(language="en-US", region=None):
     endpoint = "/movie/now_playing"
     params = {"language": language, "region": region}
@@ -138,8 +138,8 @@ def get_now_playing_movies(language="en-US", region=None):
     return response
 
 @swaig.endpoint("Get similar movies",
-    movie_id=Parameter("integer", "The TMDb ID of the movie"),
-    language=Parameter("string", "Language of the results", required=False))
+    movie_id=Parameter("integer", "The TMDb ID of the movie", required=True),
+    language=Parameter("string", "Language of the results", default="en-US"))
 def get_similar_movies(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}/similar"
     params = {"language": language}
@@ -149,11 +149,11 @@ def get_similar_movies(movie_id, language="en-US"):
     return response
 
 @swaig.endpoint("Multi-search for movies, TV shows, and people",
-    query=Parameter("string", "The search query"),
-    language=Parameter("string", "Language of the results", required=False),
-    page=Parameter("integer", "Page number for pagination", required=False),
-    include_adult=Parameter("boolean", "Whether to include adult content", required=False),
-    region=Parameter("string", "Specify a region to prioritize search results", required=False))
+    query=Parameter("string", "The search query", required=True),
+    language=Parameter("string", "Language of the results", default="en-US"),
+    page=Parameter("integer", "Page number for pagination", default=1),
+    include_adult=Parameter("boolean", "Whether to include adult content", default=False),
+    region=Parameter("string", "Specify a region to prioritize search results"))
 def multi_search(query, language="en-US", page=1, include_adult=False, region=None):
     endpoint = "/search/multi"
     params = locals()
@@ -163,8 +163,8 @@ def multi_search(query, language="en-US", page=1, include_adult=False, region=No
     return response
 
 @swaig.endpoint("Get movie credits",
-    movie_id=Parameter("integer", "The TMDb ID of the movie"),
-    language=Parameter("string", "Language of the results", required=False))
+    movie_id=Parameter("integer", "The TMDb ID of the movie", required=True),
+    language=Parameter("string", "Language of the results", default="en-US"))
 def get_movie_credits(movie_id, language="en-US"):
     endpoint = f"/movie/{movie_id}/credits"
     params = {"language": language}
@@ -174,9 +174,9 @@ def get_movie_credits(movie_id, language="en-US"):
     return response
 
 @swaig.endpoint("Get person details",
-    person_id=Parameter("integer", "The TMDb ID of the person"),
-    language=Parameter("string", "Language of the results", required=False),
-    append_to_response=Parameter("string", "Additional requests to append to the result", required=False))
+    person_id=Parameter("integer", "The TMDb ID of the person", required=True),
+    language=Parameter("string", "Language of the results", default="en-US"),
+    append_to_response=Parameter("string", "Additional requests to append to the result"))
 def get_person_details(person_id, language="en-US", append_to_response=None):
     endpoint = f"/person/{person_id}"
     params = {"language": language}
