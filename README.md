@@ -17,7 +17,7 @@
    - [Function: `get_now_playing_movies`](#function-get_now_playing_movies)
    - [Function: `get_similar_movies`](#function-get_similar_movies)
    - [Function: `multi_search`](#function-multi_search)
-4. [Environment Variables](#environment-variables)  // Added new section
+4. [Environment Variables](#environment-variables)
 5. [Sample Prompt for the AI Agent](#sample-prompt-for-the-ai-agent)
 6. [Conclusion](#conclusion)
 7. [Appendix: TMDb API Integration Notes](#appendix-tmdb-api-integration-notes)
