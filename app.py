@@ -2,16 +2,33 @@ from flask import Flask, request, jsonify, send_file
 import requests
 import os
 from signalwire_swaig.core import SWAIG, SWAIGArgument
+import logging
+import random
+from dotenv import load_dotenv
 
-app = Flask(__name__)
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+load_dotenv()
+
+logging.getLogger('werkzeug').setLevel(logging.WARNING)
+
+if os.environ.get('DEBUG'):
+    print("Debug mode is enabled")
+    debug_pin = f"{random.randint(100, 999)}-{random.randint(100, 999)}-{random.randint(100, 999)}"
+    os.environ['WERKZEUG_DEBUG_PIN'] = debug_pin
+    logging.getLogger('werkzeug').setLevel(logging.DEBUG)
+    print(f"Debugger PIN: {debug_pin}")
 
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 HTTP_USERNAME = os.getenv("HTTP_USERNAME")
 HTTP_PASSWORD = os.getenv("HTTP_PASSWORD")
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
-swaig = SWAIG(app, auth=(HTTP_USERNAME, HTTP_PASSWORD) if HTTP_USERNAME and HTTP_PASSWORD else None)
+app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+
+swaig = SWAIG(
+    app,
+    auth=(os.getenv('HTTP_USERNAME'), os.getenv('HTTP_PASSWORD'))
+)
 
 def call_tmdb_api(endpoint, params):
     url = f"{TMDB_BASE_URL}{endpoint}"
@@ -359,4 +376,4 @@ def serve_moviebot_html():
         return jsonify({"error": "Failed to serve moviebot.html"}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=os.getenv("PORT", 5000), debug=os.getenv("DEBUG"))
