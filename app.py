@@ -60,7 +60,7 @@ def search_movie(query, language="en-US", page=1, include_adult=False, region=No
     }
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_movie_search_results(response['results'])
+        return format_movie_search_results(response['results']), {}
     return response
 
 @swaig.endpoint("Get detailed movie information",
@@ -71,7 +71,7 @@ def get_movie_details(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if response and 'id' in response:
-        return format_movie_details(response)
+        return format_movie_details(response), {}
     return response
 
 @swaig.endpoint("Get movie recommendations",
@@ -82,7 +82,7 @@ def get_movie_recommendations(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_movie_recommendations_results(response['results'])
+        return format_movie_recommendations_results(response['results']), {}
     return response
 
 @swaig.endpoint("Get trending movies",
@@ -93,7 +93,7 @@ def get_trending_movies(time_window="week", language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_trending_movies_results(response['results'])
+        return format_trending_movies_results(response['results']), {}
     return response
 
 @swaig.endpoint("Discover movies by different criteria",
@@ -119,7 +119,7 @@ def discover_movies(language="en-US", region=None, sort_by="popularity.desc", in
     params = locals()
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_discover_movies_results(response['results'])
+        return format_discover_movies_results(response['results']), {}
     return response
 
 @swaig.endpoint("Get genre list",
@@ -129,7 +129,7 @@ def get_genre_list(language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'genres' in response:
-        return format_genre_list(response['genres'])
+        return format_genre_list(response['genres']), {}
     return response
 
 @swaig.endpoint("Get upcoming movies",
@@ -140,7 +140,8 @@ def get_upcoming_movies(language="en-US", region=None):
     params = {"language": language, "region": region}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_upcoming_movies_results(response['results'])
+        print("fucker\n")
+        return format_upcoming_movies_results(response['results']), {}
     return response
 
 @swaig.endpoint("Get now playing movies",
@@ -151,7 +152,7 @@ def get_now_playing_movies(language="en-US", region=None):
     params = {"language": language, "region": region}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_now_playing_movies_results(response['results'])
+        return format_now_playing_movies_results(response['results']), {}
     return response
 
 @swaig.endpoint("Get similar movies",
@@ -162,7 +163,7 @@ def get_similar_movies(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_similar_movies_results(response['results'])
+        return format_similar_movies_results(response['results']), {}
     return response
 
 @swaig.endpoint("Multi-search for movies, TV shows, and people",
@@ -176,7 +177,7 @@ def multi_search(query, language="en-US", page=1, include_adult=False, region=No
     params = locals()
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_multi_search_results(response['results'])
+        return format_multi_search_results(response['results']), {}
     return response
 
 @swaig.endpoint("Get movie credits",
@@ -187,7 +188,7 @@ def get_movie_credits(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'cast' in response or 'crew' in response:
-        return format_movie_credits(response)
+        return format_movie_credits(response), {}
     return response
 
 @swaig.endpoint("Get person details",
@@ -201,7 +202,7 @@ def get_person_details(person_id, language="en-US", append_to_response=None):
         params["append_to_response"] = append_to_response
     response = call_tmdb_api(endpoint, params)
     if 'id' in response:
-        return format_person_details(response)
+        return format_person_details(response), {}
     return response
 
 def format_movie_search_results(results):
