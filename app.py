@@ -342,14 +342,14 @@ def format_movie_credits(credits):
     
     if 'cast' in credits:
         formatted_credits.append("cast:")
-        for member in credits['cast']:
+        for member in credits['cast'][:10]:
             formatted_credits.append(
                 f"name: {member['name']} character: {member['character']}"
             )
     
     if 'crew' in credits:
         formatted_credits.append("crew:")
-        for member in credits['crew']:
+        for member in credits['crew'][:10]:
             formatted_credits.append(
                 f"name: {member['name']} department: {member['department']} job: {member['job']}"
             )
