@@ -58,7 +58,7 @@ def search_movie(query, language="en-US", page=1, include_adult=False, region=No
     }
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_movie_search_results(response['results']), {}
+        return format_movie_search_results(response['results'])
     return response
 
 @swaig.endpoint("Get detailed movie information",
@@ -69,8 +69,8 @@ def get_movie_details(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if response and 'id' in response:
-        return format_movie_details(response), {}
-    return response
+        return format_movie_details(response)
+    return response, {}
 
 @swaig.endpoint("Get movie recommendations",
     movie_id=SWAIGArgument("integer", "The TMDb ID of the movie"),
@@ -80,8 +80,8 @@ def get_movie_recommendations(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_movie_recommendations_results(response['results']), {}
-    return response
+        return format_movie_recommendations_results(response['results'])
+    return response, {}
 
 @swaig.endpoint("Get trending movies",
     time_window=SWAIGArgument("string", "Time window (day/week)", required=False),
@@ -91,8 +91,8 @@ def get_trending_movies(time_window="week", language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_trending_movies_results(response['results']), {}
-    return response
+        return format_trending_movies_results(response['results'])
+    return response, {}
 
 @swaig.endpoint("Discover movies by different criteria",
     language=SWAIGArgument("string", "Language of the results", required=False),
@@ -117,8 +117,8 @@ def discover_movies(language="en-US", region=None, sort_by="popularity.desc", in
     params = locals()
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_discover_movies_results(response['results']), {}
-    return response
+        return format_discover_movies_results(response['results'])
+    return response, {}
 
 @swaig.endpoint("Get genre list",
     language=SWAIGArgument("string", "Language of the results", required=False))
@@ -127,8 +127,8 @@ def get_genre_list(language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'genres' in response:
-        return format_genre_list(response['genres']), {}
-    return response
+        return format_genre_list(response['genres'])
+    return response, {}
 
 @swaig.endpoint("Get upcoming movies",
     language=SWAIGArgument("string", "Language of the results", required=False),
@@ -138,9 +138,8 @@ def get_upcoming_movies(language="en-US", region=None):
     params = {"language": language, "region": region}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        print("fucker\n")
-        return format_upcoming_movies_results(response['results']), {}
-    return response
+        return format_upcoming_movies_results(response['results'])
+    return response, {}
 
 @swaig.endpoint("Get now playing movies",
     language=SWAIGArgument("string", "Language of the results", required=False),
@@ -150,8 +149,8 @@ def get_now_playing_movies(language="en-US", region=None):
     params = {"language": language, "region": region}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_now_playing_movies_results(response['results']), {}
-    return response
+        return format_now_playing_movies_results(response['results'])
+    return response, {}
 
 @swaig.endpoint("Get similar movies",
     movie_id=SWAIGArgument("integer", "The TMDb ID of the movie"),
@@ -161,8 +160,8 @@ def get_similar_movies(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_similar_movies_results(response['results']), {}
-    return response
+        return format_similar_movies_results(response['results'])
+    return response, {}
 
 @swaig.endpoint("Multi-search for movies, TV shows, and people",
     query=SWAIGArgument("string", "The search query"),
@@ -175,8 +174,8 @@ def multi_search(query, language="en-US", page=1, include_adult=False, region=No
     params = locals()
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        return format_multi_search_results(response['results']), {}
-    return response
+        return format_multi_search_results(response['results'])
+    return response, {}
 
 @swaig.endpoint("Get movie credits",
     movie_id=SWAIGArgument("integer", "The TMDb ID of the movie"),
@@ -186,8 +185,8 @@ def get_movie_credits(movie_id, language="en-US"):
     params = {"language": language}
     response = call_tmdb_api(endpoint, params)
     if 'cast' in response or 'crew' in response:
-        return format_movie_credits(response), {}
-    return response
+        return format_movie_credits(response)
+    return response, {}
 
 @swaig.endpoint("Get person details",
     person_id=SWAIGArgument("integer", "The TMDb ID of the person"),
@@ -200,8 +199,11 @@ def get_person_details(person_id, language="en-US", append_to_response=None):
         params["append_to_response"] = append_to_response
     response = call_tmdb_api(endpoint, params)
     if 'id' in response:
-        return format_person_details(response), {}
-    return response
+        return format_person_details(response)
+    return response, {}
+
+def integrate_results_with_metadata(results, metadata={}):
+    return results, metadata
 
 def format_movie_search_results(results):
     explanation = "These are the search results for movies based on your query:\n"
@@ -211,7 +213,7 @@ def format_movie_search_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie.get('release_date', 'N/A')} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_movie_details(movie):
     explanation = "Here are the detailed information about the movie:\n"
@@ -240,7 +242,7 @@ def format_movie_details(movie):
         f"status: {movie['status']}\n"
         f"tagline: {movie['tagline']}\n"
     )
-    return "\n".join(formatted_details)
+    return integrate_results_with_metadata(formatted_details)
 
 def format_movie_recommendations_results(results):
     explanation = "These are the recommended movies based on your selection:\n"
@@ -250,7 +252,7 @@ def format_movie_recommendations_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_trending_movies_results(results):
     explanation = "These are the trending movies for the selected time window:\n"
@@ -260,7 +262,7 @@ def format_trending_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_discover_movies_results(results):
     explanation = "These are the movies discovered based on your criteria:\n"
@@ -270,7 +272,7 @@ def format_discover_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_genre_list(genres):
     explanation = "Here is the list of available movie genres with their IDs:\n"
@@ -279,7 +281,7 @@ def format_genre_list(genres):
         formatted_genres.append(
             f"name: {genre['name']} id: {genre['id']}"
         )
-    return "\n".join(formatted_genres)
+    return integrate_results_with_metadata("\n".join(formatted_genres))
 
 def format_upcoming_movies_results(results):
     explanation = "These are the upcoming movies:\n"
@@ -289,7 +291,7 @@ def format_upcoming_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_now_playing_movies_results(results):
     explanation = "These are the movies currently playing in theaters:\n"
@@ -299,7 +301,7 @@ def format_now_playing_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_similar_movies_results(results):
     explanation = "These are movies similar to your selection:\n"
@@ -309,7 +311,7 @@ def format_similar_movies_results(results):
         formatted_results.append(
             f"id: {movie['id']} title: {movie['title']} release_date: {movie['release_date']} genre_ids: {', '.join(map(str, genre_ids))}"
         )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_multi_search_results(results):
     explanation = "These are the results from your multi-search query:\n"
@@ -332,7 +334,7 @@ def format_multi_search_results(results):
             formatted_results.append(
                 f"name: {item['name']} known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in item['known_for']])} known_for_department: {item['known_for_department']}"
             )
-    return "\n".join(formatted_results)
+    return integrate_results_with_metadata("\n".join(formatted_results))
 
 def format_movie_credits(credits):
     explanation = "Here are the cast and crew details for the movie:\n"
@@ -340,19 +342,19 @@ def format_movie_credits(credits):
     
     if 'cast' in credits:
         formatted_credits.append("cast:")
-        for member in credits['cast'][:10]:
+        for member in credits['cast']:
             formatted_credits.append(
                 f"name: {member['name']} character: {member['character']}"
             )
     
     if 'crew' in credits:
         formatted_credits.append("crew:")
-        for member in credits['crew'][:10]:
+        for member in credits['crew']:
             formatted_credits.append(
                 f"name: {member['name']} department: {member['department']} job: {member['job']}"
             )
     
-    return "\n".join(formatted_credits)
+    return integrate_results_with_metadata("\n".join(formatted_credits))
 
 def format_person_details(person):
     explanation = "Here are the details about the person:\n"
@@ -364,7 +366,7 @@ def format_person_details(person):
         f"place_of_birth: {person['place_of_birth']}\n"
         f"known_for: {', '.join([known['title'] if 'title' in known else known['name'] for known in person.get('known_for', [])])}"
     )
-    return "\n".join(formatted_details)
+    return integrate_results_with_metadata("\n".join(formatted_details))
 
 @app.route('/', methods=['GET'])
 @app.route('/swaig', methods=['GET'])       
@@ -375,4 +377,4 @@ def serve_moviebot_html():
         return jsonify({"error": "Failed to serve moviebot.html"}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=os.getenv("PORT", 5000), debug=os.getenv("DEBUG"))
+    app.run(host="0.0.0.0", port=os.getenv("PORT", 4000), debug=os.getenv("DEBUG"))
