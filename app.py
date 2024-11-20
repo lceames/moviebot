@@ -25,10 +25,8 @@ TMDB_BASE_URL = "https://api.themoviedb.org/3"
 app = Flask(__name__)
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
-swaig = SWAIG(
-    app,
-    auth=(os.getenv('HTTP_USERNAME'), os.getenv('HTTP_PASSWORD'))
-)
+auth = (HTTP_USERNAME, HTTP_PASSWORD) if HTTP_PASSWORD and HTTP_PASSWORD else ()
+swaig = SWAIG(app, auth=auth)
 
 def call_tmdb_api(endpoint, params):
     url = f"{TMDB_BASE_URL}{endpoint}"
